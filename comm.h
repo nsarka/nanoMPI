@@ -11,12 +11,6 @@ struct nanompi_communicator_t {
     uint32_t                      assertions; /* info assertions */
 
     nanompi_group_t        *local_group;
-
-    /* Collectives module interface and data */
-    //mca_coll_base_comm_coll_t *c_coll;
-
-    /* instance that this comm belongs to */
-    //nanompi_instance_t* instance;
 };
 typedef struct nanompi_communicator_t nanompi_communicator_t;
 

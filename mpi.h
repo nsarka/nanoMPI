@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "comm.h"
+#include "proc.h"
 #include "group.h"
 #include "status.h"
 
