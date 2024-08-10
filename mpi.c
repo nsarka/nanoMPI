@@ -6,8 +6,15 @@ int MPI_Init(int *argc, char ***argv)
 {
     int my_rank = atoi(getenv("NANOMPI_WORLD_RANK"));
     int world_size = atoi(getenv("NANOMPI_WORLD_SIZE"));
+
     nanompi_comm_world = malloc(sizeof(nanompi_communicator_t));
     nanompi_comm_world->local_group = malloc(sizeof(nanompi_group_t));
+
+    nanompi_comm_world->local_group->grp_my_rank = my_rank;
+    nanompi_comm_world->local_group->grp_proc_count = world_size;
+
+    nanompi_comm_world->my_rank = my_rank;
+
     return MPI_SUCCESS;
 }
 

@@ -34,3 +34,5 @@
 tests/test_hello
 tests/test_pt2pt
 .vscode/
+hostfile
+mpirun
