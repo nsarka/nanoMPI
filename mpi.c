@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "mpi.h"
 
-MPI_Comm nanompi_comm_world;
-
 int MPI_Init(int *argc, char ***argv)
 {
     int my_rank = atoi(getenv("NANOMPI_WORLD_RANK"));

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "mpi.h"
 
+MPI_Comm nanompi_comm_world;
+
 int MPI_Comm_rank(MPI_Comm comm, int *rank)
 {
     *rank = comm->my_rank;
