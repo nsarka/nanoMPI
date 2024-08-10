@@ -31,5 +31,6 @@
 *.out
 *.app
 
-test_mpi
+tests/test_hello
+tests/test_pt2pt
 .vscode/
