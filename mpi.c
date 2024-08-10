@@ -20,18 +20,6 @@ int MPI_Finalize(void)
     return MPI_SUCCESS;
 }
 
-int MPI_Comm_rank(MPI_Comm comm, int *rank)
-{
-    *rank = comm->my_rank;
-    return MPI_SUCCESS;
-}
-
-int MPI_Comm_size(MPI_Comm comm, int *size)
-{
-    *size = comm->local_group->grp_proc_count;
-    return MPI_SUCCESS;
-}
-
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
                             int tag, MPI_Comm comm)
 {

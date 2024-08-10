@@ -14,4 +14,13 @@ struct nanompi_communicator_t {
 };
 typedef struct nanompi_communicator_t nanompi_communicator_t;
 
+typedef struct nanompi_communicator_t *MPI_Comm;
+
+/* Comm world */
+extern MPI_Comm nanompi_comm_world;
+#define MPI_COMM_WORLD nanompi_comm_world
+
+int MPI_Comm_rank(MPI_Comm comm, int *rank);
+int MPI_Comm_size(MPI_Comm comm, int *size);
+
 #endif
