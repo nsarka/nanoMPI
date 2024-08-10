@@ -1,12 +1,12 @@
 .PHONY : clean
 
-CC = g++
+CC = gcc
 CPPFLAGS = -g -fPIC
 LDFLAGS = -shared
 
-SOURCES = mpi.cpp
+SOURCES = mpi.c
 HEADERS = mpi.h
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS = $(SOURCES:.c=.o)
 
 all: libmpi.so test_mpi
 
@@ -17,4 +17,4 @@ libmpi.so: $(OBJECTS)
 	$(CC) $(CPPFLAGS)  $(OBJECTS) -o $@ $(LDFLAGS)
 
 test_mpi: libmpi.so
-	$(CC) -g -o $@ test_mpi.cpp -L. -lmpi
+	$(CC) -g -o $@ test_mpi.c -L. -lmpi
