@@ -26,9 +26,6 @@ We use `make` to compile nanoMPI
 
 </details>
 
-\
-&nbsp;
-
 Install the `ssh` server
 ```
 sudo apt update
