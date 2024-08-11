@@ -137,7 +137,8 @@ Hello world from rank 1 out of 2 processors
 
 ## Roadmap
 
-- [ ] Basic launcher
+- [x] Basic launcher
 - [ ] Socket implementation of point-to-point
-- [ ] Basic Collectives
+- [x] Basic Collectives
+- [ ] Collective algos
 - [ ] InfiniBand implementation of point-to-point
