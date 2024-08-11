@@ -71,6 +71,7 @@ int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datat
             if (i != root) {
                 void *tempbuf = malloc(count * datatype);
                 MPI_Recv(tempbuf, count, datatype, i, 0, comm, MPI_STATUS_IGNORE);
+                // TODO: other reduction ops
                 for (int j = 0; j < count; j++) {
                     ((int*)recvbuf)[j] += ((int*)tempbuf)[j];
                 }
