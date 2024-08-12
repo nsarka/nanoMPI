@@ -50,7 +50,9 @@ Add your key to the `ssh-agent`:
 ssh-add ~/.ssh/id_ed25519
 ```
 
-Test your installation by `ssh`-ing to your local machine:
+
+
+Test your installation by `ssh`-ing to your local machine (**Note**: If using a remote server--like on a cluster--you should copy the key into ~/.ssh/authorized_keys on the remote server first. This will avoid it asking for your password every time):
 
 ```
 $ ssh localhost

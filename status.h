@@ -21,4 +21,6 @@ typedef struct ompi_status_public_t ompi_status_public_t;
 
 typedef struct nanompi_status_public_t MPI_Status;
 
+#define MPI_STATUS_IGNORE ((MPI_Status *) 0)
+
 #endif

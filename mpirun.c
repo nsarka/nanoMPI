@@ -6,10 +6,10 @@
 
 #define NDEBUG // Comment for debug prints
 
-void execute_command_on_host(const char *hostname, const char *cmd, int rank, int size) {
+void execute_command_on_host(const char *hostname, const char *cmd, int rank, int size, char *hostfile_path) {
     char ssh_command[MAX_LINE_LENGTH] = {0};
 
-    snprintf(ssh_command, sizeof(ssh_command), "ssh %s 'export NANOMPI_WORLD_RANK=%d ; export NANOMPI_WORLD_SIZE=%d ; export LD_LIBRARY_PATH=%s ; cd %s ; %s'", hostname, rank, size, getenv("LD_LIBRARY_PATH"), getenv("PWD"), cmd);
+    snprintf(ssh_command, sizeof(ssh_command), "ssh %s 'export NANOMPI_WORLD_RANK=%d ; export NANOMPI_WORLD_SIZE=%d ; export NANOMPI_HOSTFILE=%s ; export LD_LIBRARY_PATH=%s ; cd %s ; %s'", hostname, rank, size, hostfile_path, getenv("LD_LIBRARY_PATH"), getenv("PWD"), cmd);
 
 #ifndef NDEBUG
     printf("%s\n", ssh_command);
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
         }
 
         // Execute the command on the hostname
-        execute_command_on_host(line, argv[2], rank, size);
+        execute_command_on_host(line, argv[2], rank, size, filename);
 
         rank++;
     }

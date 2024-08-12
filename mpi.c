@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
+
 #include "mpi.h"
+
 
 int MPI_Init(int *argc, char ***argv)
 {
     int my_rank = atoi(getenv("NANOMPI_WORLD_RANK"));
     int world_size = atoi(getenv("NANOMPI_WORLD_SIZE"));
+    char *hostfile = getenv("NANOMPI_HOSTFILE");
 
     nanompi_comm_world = malloc(sizeof(nanompi_communicator_t));
     nanompi_comm_world->local_group = malloc(sizeof(nanompi_group_t));
@@ -57,14 +59,14 @@ int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm
 
     return MPI_SUCCESS;
 }
-+
+
 int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                MPI_Op op, int root, MPI_Comm comm)
 {
     int rank, size;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
-+
+
     if (rank == root) {
         memcpy(recvbuf, sendbuf, count * datatype);
         for (int i = 0; i < size; i++) {

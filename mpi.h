@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "op.h"
 #include "comm.h"
 #include "proc.h"
 #include "group.h"

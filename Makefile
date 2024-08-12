@@ -4,8 +4,8 @@ CC = gcc
 CPPFLAGS = -g -fPIC
 LDFLAGS = -shared
 
-SOURCES = mpi.c comm.c group.c proc.c
-HEADERS = mpi.h comm.h group.h proc.h status.h
+SOURCES = mpi.c comm.c group.c proc.c op.c
+HEADERS = mpi.h comm.h group.h proc.h status.h op.h
 OBJECTS = $(SOURCES:.c=.o)
 
 all: libmpi.so mpirun test_hello test_pt2pt
