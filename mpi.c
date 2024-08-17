@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "mpi.h"
-
+#include "util.h"
 
 int MPI_Init(int *argc, char ***argv)
 {
@@ -68,10 +68,10 @@ int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datat
     MPI_Comm_size(comm, &size);
 
     if (rank == root) {
-        memcpy(recvbuf, sendbuf, count * datatype);
+        memcpy(recvbuf, sendbuf, count * nanompi_get_dtype_size(datatype));
         for (int i = 0; i < size; i++) {
             if (i != root) {
-                void *tempbuf = malloc(count * datatype);
+                void *tempbuf = malloc(count * nanompi_get_dtype_size(datatype));
                 MPI_Recv(tempbuf, count, datatype, i, 0, comm, MPI_STATUS_IGNORE);
                 // TODO: other reduction ops
                 for (int j = 0; j < count; j++) {
@@ -112,7 +112,7 @@ int MPI_Reduce_scatter(const void *sendbuf, void *recvbuf, const int recvcounts[
         total_count += recvcounts[i];
     }
 
-    void *tempbuf = malloc(total_count * datatype);
+    void *tempbuf = malloc(total_count * nanompi_get_dtype_size(datatype));
     MPI_Allreduce(sendbuf, tempbuf, total_count, datatype, op, comm);
 
     int offset = 0;
@@ -120,7 +120,7 @@ int MPI_Reduce_scatter(const void *sendbuf, void *recvbuf, const int recvcounts[
         offset += recvcounts[i];
     }
 
-    memcpy(recvbuf, (char*)tempbuf  offset * datatype, recvcounts[rank] * datatype);
+    memcpy(recvbuf, (char*)tempbuf + offset * nanompi_get_dtype_size(datatype), recvcounts[rank] * nanompi_get_dtype_size(datatype));
     free(tempbuf);
 
     return MPI_SUCCESS;
@@ -137,9 +137,9 @@ int MPI_Scatter(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     if (rank == root) {
         for (int i = 0; i < size; i++) {
             if (i != root) {
-                MPI_Send((char*)sendbuf  i * sendcount * sendtype, sendcount, sendtype, i, 0, comm);
+                MPI_Send((char*)sendbuf + i * sendcount * nanompi_get_dtype_size(sendtype), sendcount, sendtype, i, 0, comm);
             } else {
-                memcpy(recvbuf, (char*)sendbuf  i * sendcount * sendtype, recvcount * recvtype);
+                memcpy(recvbuf, (char*)sendbuf + i * sendcount * nanompi_get_dtype_size(sendtype), recvcount * nanompi_get_dtype_size(recvtype));
             }
         }
     } else {
@@ -160,9 +160,9 @@ int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     if (rank == root) {
         for (int i = 0; i < size; i++) {
             if (i != root) {
-                MPI_Recv((char*)recvbuf  i * recvcount * recvtype, recvcount, recvtype, i, 0, comm, MPI_STATUS_IGNORE);
+                MPI_Recv((char*)recvbuf + i * recvcount * nanompi_get_dtype_size(recvtype), recvcount, recvtype, i, 0, comm, MPI_STATUS_IGNORE);
             } else {
-                memcpy((char*)recvbuf  i * recvcount * recvtype, sendbuf, sendcount * sendtype);
+                memcpy((char*)recvbuf + i * recvcount * nanompi_get_dtype_size(recvtype), sendbuf, sendcount * nanompi_get_dtype_size(sendtype));
             }
         }
     } else {
@@ -196,8 +196,8 @@ int MPI_Alltoall(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     MPI_Comm_size(comm, &size);
 
     for (int i = 0; i < size; i++) {
-        MPI_Send((char*)sendbuf  i * sendcount * sendtype, sendcount, sendtype, i, 0, comm);
-        MPI_Recv((char*)recvbuf  i * recvcount * recvtype, recvcount, recvtype, i, 0, comm, MPI_STATUS_IGNORE);
+        MPI_Send((char*)sendbuf + i * sendcount * nanompi_get_dtype_size(sendtype), sendcount, sendtype, i, 0, comm);
+        MPI_Recv((char*)recvbuf + i * recvcount * nanompi_get_dtype_size(recvtype), recvcount, recvtype, i, 0, comm, MPI_STATUS_IGNORE);
     }
 
     return MPI_SUCCESS;
