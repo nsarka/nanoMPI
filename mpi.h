@@ -20,7 +20,7 @@ int MPI_Finalize(void);
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
                             int tag, MPI_Comm comm);
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source,
-                            int tag, MPI_Comm comm, MPI_Status *status);/*
+                            int tag, MPI_Comm comm, MPI_Status *status);
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
 int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                MPI_Op op, int root, MPI_Comm comm);
@@ -35,7 +35,7 @@ int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
 int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                   void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
 int MPI_Alltoall(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
-                 void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);*/
+                 void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
 
 /*
  * Error classes and codes
