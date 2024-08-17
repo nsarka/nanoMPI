@@ -40,7 +40,7 @@ int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source,
 {
     return MPI_SUCCESS;
 }
-
+/*
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)
 {
     int rank, size;
@@ -202,3 +202,4 @@ int MPI_Alltoall(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
 
     return MPI_SUCCESS;
 }
+*/

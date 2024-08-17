@@ -4,17 +4,16 @@
 #include "mpi.h"
 #include "group.h"
 
-struct nanompi_communicator_t {
+typedef struct nanompi_communicator_t {
     int                           my_rank;
     uint32_t                      flags; /* flags, e.g. intercomm,
                                               topology, etc. */
     uint32_t                      assertions; /* info assertions */
 
     nanompi_group_t        *local_group;
-};
-typedef struct nanompi_communicator_t nanompi_communicator_t;
+} nanompi_communicator_t;
 
-typedef struct nanompi_communicator_t *MPI_Comm;
+typedef nanompi_communicator_t *MPI_Comm;
 
 /* Comm world */
 extern MPI_Comm nanompi_comm_world;
