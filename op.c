@@ -37,7 +37,7 @@ static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
 
 }
 
-nanompi_op_t nanompi_op_sum =
+MPI_Op nanompi_op_sum =
 {
     .op_type = NANOMPI_OP_SUM,
     .fn_ptr = op_sum

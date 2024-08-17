@@ -33,6 +33,11 @@
 
 tests/test_hello
 tests/test_pt2pt
+tests/test_allreduce
+tests/test_alltoall
+tests/test_bcast
+tests/test_reduce
+tests/test_scatter_gather
 .vscode/
 hostfile
 mpirun

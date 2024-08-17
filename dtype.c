@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "mpi.h"
 
 nanompi_dtype_t nanompi_dtype_int =

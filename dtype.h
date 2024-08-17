@@ -1,7 +1,8 @@
 #ifndef NANOMPI_DTYPE_H
 #define NANOMPI_DTYPE_H
 
-#include "mpi.h"
+#include <stddef.h>
+#include <stdint.h>
 
 enum nanompi_dtype_id {
     NANOMPI_DTYPE_INT,

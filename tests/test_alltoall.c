@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     int recv_data[ARRAY_SIZE];
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
-        send_data[i] = rank * 100  i;
+        send_data[i] = rank * 100 + i;
     }
 
     printf("Rank %d: Send data: ", rank);

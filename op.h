@@ -1,7 +1,6 @@
 #ifndef NANOMPI_OP_H
 #define NANOMPI_OP_H
 
-#include "mpi.h"
 #include "dtype.h"
 
 enum nanompi_op_type {
