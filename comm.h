@@ -22,4 +22,7 @@ extern MPI_Comm nanompi_comm_world;
 int MPI_Comm_rank(MPI_Comm comm, int *rank);
 int MPI_Comm_size(MPI_Comm comm, int *size);
 
+int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_size, char *hostfile);
+int nanompi_free_comm(nanompi_communicator_t *comm);
+
 #endif
