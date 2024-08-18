@@ -17,7 +17,7 @@ libmpi.so: $(OBJECTS)
 	$(CC) $(CPPFLAGS)  $(OBJECTS) -o $@ $(LDFLAGS)
 
 mpirun: mpirun.c
-	$(CC) -g -o $@ mpirun.c -L. -I.
+	$(CC) -g -o $@ mpirun.c -L. -I. -lpthread
 
 tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_scatter_gather test_alltoall
 

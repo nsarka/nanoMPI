@@ -1,11 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 
 #include "constants.h"
 
-void execute_command_on_host(const char *hostname, const char *cmd, int rank, int size, char *hostfile_path) {
+typedef struct execute_args {
+    const char *hostname;
+    const char *cmd;
+    int rank;
+    int size;
+    const char *hostfile_path;
+} execute_args_t;
+
+void* execute_command_on_host(void *args) {
     char ssh_command[MAX_HOSTNAME_LENGTH] = {0};
+
+    execute_args_t *exe_args = (execute_args_t *) args;
+
+    const char *hostname = exe_args->hostname;
+    const char *cmd = exe_args->cmd;
+    int rank = exe_args->rank;
+    int size = exe_args->size;
+    const char *hostfile_path = exe_args->hostfile_path;
 
     snprintf(ssh_command, sizeof(ssh_command), "ssh %s 'export NANOMPI_WORLD_RANK=%d ; export NANOMPI_WORLD_SIZE=%d ; export NANOMPI_HOSTFILE=%s ; export LD_LIBRARY_PATH=%s ; cd %s ; %s'", hostname, rank, size, hostfile_path, getenv("LD_LIBRARY_PATH"), getenv("PWD"), cmd);
 
@@ -42,6 +59,12 @@ int main(int argc, char *argv[]) {
     }
     fseek(file, 0, SEEK_SET);
 
+    pthread_t *threads = malloc(size * sizeof(pthread_t));
+    if (!threads) {
+        printf("Error allocating threads\n");
+        goto close;
+    }
+
     while (fgets(line, sizeof(line), file)) {
         // Remove newline character from the end of the line
         size_t len = strlen(line);
@@ -54,12 +77,30 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        // Execute the command on the hostname
-        execute_command_on_host(line, argv[2], rank, size, filename);
+        execute_args_t args;
+        args.hostname = line;
+        args.cmd = argv[2];
+        args.rank = rank;
+        args.size = size;
+        args.hostfile_path = filename;
+
+        // Execute the command on the hostname in a thread
+        if (pthread_create(&threads[rank], NULL, execute_command_on_host, &args) != 0) {
+            perror("pthread_create");
+            goto free_threads;
+        }
 
         rank++;
     }
 
+    // Wait for all threads
+    for (rank = 0; rank < size; rank++) {
+        pthread_join(threads[rank], NULL);
+    }
+
+free_threads:
+    free(threads);
+close:
     fclose(file);
     return EXIT_SUCCESS;
 }
