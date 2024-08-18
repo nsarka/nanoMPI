@@ -18,13 +18,16 @@ void* execute_command_on_host(void *args) {
 
     execute_args_t *exe_args = (execute_args_t *) args;
 
-    const char *hostname = exe_args->hostname;
-    const char *cmd = exe_args->cmd;
-    int rank = exe_args->rank;
-    int size = exe_args->size;
-    const char *hostfile_path = exe_args->hostfile_path;
-
-    snprintf(ssh_command, sizeof(ssh_command), "ssh %s 'export NANOMPI_WORLD_RANK=%d ; export NANOMPI_WORLD_SIZE=%d ; export NANOMPI_HOSTFILE=%s ; export LD_LIBRARY_PATH=%s ; cd %s ; %s'", hostname, rank, size, hostfile_path, getenv("LD_LIBRARY_PATH"), getenv("PWD"), cmd);
+    snprintf(ssh_command,
+             sizeof(ssh_command),
+             "ssh %s 'export NANOMPI_WORLD_RANK=%d ; export NANOMPI_WORLD_SIZE=%d ; export NANOMPI_HOSTFILE=%s ; export LD_LIBRARY_PATH=%s ; cd %s ; %s'",
+             exe_args->hostname,
+             exe_args->rank,
+             exe_args->size,
+             exe_args->hostfile_path,
+             getenv("LD_LIBRARY_PATH"),
+             getenv("PWD"),
+             exe_args->cmd);
 
 #ifndef NDEBUG
     printf("%s\n", ssh_command);
@@ -65,6 +68,12 @@ int main(int argc, char *argv[]) {
         goto close;
     }
 
+    execute_args_t *args = malloc(size * sizeof(execute_args_t));
+    if (!args) {
+        printf("Error allocating args\n");
+        goto free_threads;
+    }
+
     while (fgets(line, sizeof(line), file)) {
         // Remove newline character from the end of the line
         size_t len = strlen(line);
@@ -77,17 +86,16 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        execute_args_t args;
-        args.hostname = line;
-        args.cmd = argv[2];
-        args.rank = rank;
-        args.size = size;
-        args.hostfile_path = filename;
+        args[rank].hostname = line;
+        args[rank].cmd = argv[2];
+        args[rank].rank = rank;
+        args[rank].size = size;
+        args[rank].hostfile_path = filename;
 
         // Execute the command on the hostname in a thread
-        if (pthread_create(&threads[rank], NULL, execute_command_on_host, &args) != 0) {
+        if (pthread_create(&threads[rank], NULL, execute_command_on_host, &args[rank]) != 0) {
             perror("pthread_create");
-            goto free_threads;
+            goto free_args;
         }
 
         rank++;
@@ -98,6 +106,8 @@ int main(int argc, char *argv[]) {
         pthread_join(threads[rank], NULL);
     }
 
+free_args:
+    free(args);
 free_threads:
     free(threads);
 close:
