@@ -5,11 +5,12 @@
 #include "group.h"
 #include "mpi.h"
 
-int nanompi_init_group(nanompi_group_t *group, int rank, int world_size, char *hostfile)
+int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, char *hostfile)
 {
     int i = 0, status = MPI_SUCCESS;
     char line[MAX_HOSTNAME_LENGTH] = {0};
     FILE *fp;
+    nanompi_group_t *group;
 
     fp = fopen(hostfile, "r");
     if (fp == NULL) {
@@ -18,13 +19,20 @@ int nanompi_init_group(nanompi_group_t *group, int rank, int world_size, char *h
         goto exit;
     }
 
+    group = malloc(sizeof(nanompi_group_t));
+    if (!group) {
+        printf("Error: OOM allocating nanompi_group_t\n");
+        goto close;
+    }
+    *group_dptr = group;
+
     group->grp_my_rank = rank;
     group->grp_proc_count = world_size;
 
     group->grp_proc_pointers = malloc(sizeof(nanompi_proc_t *) * world_size);
     if (!group->grp_proc_pointers) {
         printf("Error: OOM allocating group->grp_proc_pointers\n");
-        goto close;
+        goto free_group;
     }
 
     while (fgets(line, sizeof(line), fp)) {
@@ -65,6 +73,8 @@ free_hostnames:
     }
 free:
     free(group->grp_proc_pointers);
+free_group:
+    free(group);
     goto close;
 }
 
