@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "mpi.h"
+#include <stdint.h>
+
+#include "comm.h"
+#include "socket_backend.h"
 
 MPI_Comm nanompi_comm_world;
 
@@ -26,16 +29,27 @@ int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_si
         return MPI_ERR_OTHER;
     }
 
+    nanompi_comm_world->my_rank = rank;
+
     status = nanompi_init_group(&nanompi_comm_world->local_group, rank, world_size, hostfile);
     if (status) {
         printf("error in nanompi_init_group: %d\n", status);
         goto free_comm_world;
     }
 
-    nanompi_comm_world->my_rank = rank;
+    status = nanompi_init_socket_backend(nanompi_comm_world);
+    if (status) {
+        printf("error in nanompi_init_group: %d\n", status);
+        goto free_group;
+    }
 
 exit:
     return status;
+free_group:
+    status = nanompi_free_group(nanompi_comm_world->local_group);
+    if (status) {
+        printf("error while freeing group\n");
+    }
 free_comm_world:
     free(nanompi_comm_world);
     goto exit;

@@ -1,3 +1,6 @@
+#ifndef NANOMPI_CONSTANTS_H
+#define NANOMPI_CONSTANTS_H
+
 /* 
  *  MPI Standard
  */
@@ -16,3 +19,5 @@
 #define MPI_SUCCESS                   0
 #define MPI_ERR_OTHER                 16
 #define MPI_ERR_UNSUPPORTED_OPERATION 52
+
+#endif

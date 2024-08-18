@@ -1,16 +1,11 @@
 #ifndef NANOMPI_COMM_H
 #define NANOMPI_COMM_H
 
-#include "mpi.h"
 #include "group.h"
 
 typedef struct nanompi_communicator_t {
-    int                           my_rank;
-    uint32_t                      flags; /* flags, e.g. intercomm,
-                                              topology, etc. */
-    uint32_t                      assertions; /* info assertions */
-
-    nanompi_group_t        *local_group;
+    int              my_rank;
+    nanompi_group_t *local_group;
 } nanompi_communicator_t;
 
 typedef nanompi_communicator_t *MPI_Comm;
