@@ -10,21 +10,30 @@ int MPI_Init(int *argc, char ***argv)
     int my_rank = atoi(getenv("NANOMPI_WORLD_RANK"));
     int world_size = atoi(getenv("NANOMPI_WORLD_SIZE"));
     char *hostfile = getenv("NANOMPI_HOSTFILE");
+    int status = MPI_SUCCESS;
 
     nanompi_comm_world = malloc(sizeof(nanompi_communicator_t));
     nanompi_comm_world->local_group = malloc(sizeof(nanompi_group_t));
 
-    nanompi_comm_world->local_group->grp_my_rank = my_rank;
-    nanompi_comm_world->local_group->grp_proc_count = world_size;
+    status = nanompi_init_group(nanompi_comm_world->local_group, my_rank, world_size, hostfile);
+    if (status) {
+        printf("error in nanompi_init_group: %d\n", status);
+        goto free_mem;
+    }
 
     nanompi_comm_world->my_rank = my_rank;
 
-    return MPI_SUCCESS;
+exit:
+    return status;
+free_mem:
+    free(nanompi_comm_world->local_group);
+    free(nanompi_comm_world);
+    goto exit;
 }
 
 int MPI_Finalize(void)
 {
-    free(nanompi_comm_world->local_group);
+    nanompi_free_group(nanompi_comm_world->local_group);
     free(nanompi_comm_world);
     return MPI_SUCCESS;
 }

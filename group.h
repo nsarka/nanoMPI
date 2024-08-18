@@ -1,7 +1,7 @@
 #ifndef NANOMPI_GROUP_H
 #define NANOMPI_GROUP_H
 
-#include "mpi.h"
+#include "proc.h"
 
 typedef struct nanompi_group_t {
     int grp_proc_count;     /**< number of processes in group */
@@ -13,5 +13,8 @@ typedef struct nanompi_group_t {
     /** pointer to the original group when using sparse storage */
     struct nanompi_group_t *grp_parent_group_ptr;
 } nanompi_group_t;
+
+int nanompi_init_group(nanompi_group_t *group, int rank, int world_size, char *hostfile);
+int nanompi_free_group(nanompi_group_t *group);
 
 #endif

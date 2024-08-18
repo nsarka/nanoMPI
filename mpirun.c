@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LINE_LENGTH 256
-
-#define NDEBUG // Comment for debug prints
+#include "constants.h"
 
 void execute_command_on_host(const char *hostname, const char *cmd, int rank, int size, char *hostfile_path) {
-    char ssh_command[MAX_LINE_LENGTH] = {0};
+    char ssh_command[MAX_HOSTNAME_LENGTH] = {0};
 
     snprintf(ssh_command, sizeof(ssh_command), "ssh %s 'export NANOMPI_WORLD_RANK=%d ; export NANOMPI_WORLD_SIZE=%d ; export NANOMPI_HOSTFILE=%s ; export LD_LIBRARY_PATH=%s ; cd %s ; %s'", hostname, rank, size, hostfile_path, getenv("LD_LIBRARY_PATH"), getenv("PWD"), cmd);
 
@@ -34,7 +32,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    char line[MAX_LINE_LENGTH] = {0};
+    char line[MAX_HOSTNAME_LENGTH] = {0};
     int rank = 0;
     int size = 0;
 
