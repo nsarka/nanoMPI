@@ -5,6 +5,12 @@ A minimal MPI Implementation loosely based on OpenMPI. nanoMPI has a few usecase
 1. First and foremost, nanoMPI is for educational purposes. The vast majority of most MPI libraries' code is dedicated to performance optimization, which makes them hard to parse as a beginner. nanoMPI allows beginners to the field of distributed computing to quickly see answers to questions like "how is a tree allreduce implemented?"
 2. Development of distributed code on local devices is super convenient! It works offline and doesn't require job scheduling. Part of this project is to allow the authors to develop distributed code on a local laptop. 
 
+# Contents
+
+- [Quickstart](#quickstart)
+- [Additional Resources](#resources)
+- [Roadmap](#roadmap)
+
 ## Quickstart
 
 Here are some basic setup instructions for running socket-based point-to-point. These instructions assume a linux-based environment like Ubuntu or [WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
@@ -137,10 +143,19 @@ Hello world from rank 0 out of 2 processors
 Hello world from rank 1 out of 2 processors
 ```
 
+## Additional Resources
+
+- [This page from NCCL](https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md) explains how to analyze the bandwidth of collectives
+- [MPI Introduction](https://mpitutorial.com/tutorials/mpi-introduction/) - A quick introduction to common MPI concepts
+- [Parallel Programming for Science and Engineering Book](https://theartofhpc.com/pcse/) - A thorough coverage of MPI concepts. More of a "textbook for MPI"
+
 ## Roadmap
+
+We welcome contributions!
 
 - [x] Basic launcher
 - [ ] Socket implementation of point-to-point
 - [x] Basic Collectives
 - [ ] Collective algos
 - [ ] InfiniBand implementation of point-to-point
+- [ ] Basic benchmarks
