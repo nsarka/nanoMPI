@@ -20,4 +20,10 @@
 #define MPI_ERR_OTHER                 16
 #define MPI_ERR_UNSUPPORTED_OPERATION 52
 
+/*
+ * Socket info
+ */
+#define PORT 44083
+
+
 #endif

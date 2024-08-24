@@ -4,22 +4,13 @@
 /*
  * MPI_Status
  */
-struct nanompi_status_public_t {
-    /* These fields are publicly defined in the MPI specification.
-       User applications may freely read from these fields. */
+typedef struct nanompi_status_t {
     int MPI_SOURCE;
     int MPI_TAG;
     int MPI_ERROR;
-    /* The following two fields are internal to the Open MPI
-       implementation and should not be accessed by MPI applications.
-       They are subject to change at any time.  These are not the
-       droids you're looking for. */
-    int _cancelled;
-    size_t _ucount;
-};
-typedef struct ompi_status_public_t ompi_status_public_t;
+} nanompi_status_t;
 
-typedef struct nanompi_status_public_t MPI_Status;
+typedef nanompi_status_t MPI_Status;
 
 #define MPI_STATUS_IGNORE ((MPI_Status *) 0)
 

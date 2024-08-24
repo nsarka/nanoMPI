@@ -6,6 +6,7 @@
 typedef struct nanompi_communicator_t {
     int              my_rank;
     nanompi_group_t *local_group;
+    nanompi_socket_info_t socket_info;
 } nanompi_communicator_t;
 
 typedef nanompi_communicator_t *MPI_Comm;

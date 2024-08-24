@@ -7,7 +7,6 @@
 typedef struct nanompi_proc_t {
     char hostname[MAX_HOSTNAME_LENGTH];
     int port;
-    nanompi_socket_info_t *socket_info;
 } nanompi_proc_t;
 
 #endif

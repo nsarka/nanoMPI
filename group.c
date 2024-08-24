@@ -53,7 +53,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
             goto free_hostnames;
         }
         memcpy(&group->grp_proc_pointers[i]->hostname, line, MAX_HOSTNAME_LENGTH);
-        group->grp_proc_pointers[i]->port = 8000 + i;
+        group->grp_proc_pointers[i]->port = PORT + i;
         i++;
     }
 

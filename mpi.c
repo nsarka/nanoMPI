@@ -4,6 +4,7 @@
 
 #include "mpi.h"
 #include "util.h"
+#include "socket_backend.h"
 
 int MPI_Init(int *argc, char ***argv)
 {
@@ -32,16 +33,27 @@ int MPI_Finalize(void)
     return status;
 }
 
-int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
-                            int tag, MPI_Comm comm)
+// TODO: tags
+int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
 {
-    return MPI_SUCCESS;
+    int status = MPI_SUCCESS;
+    size_t msg_size = count * nanompi_get_dtype_size(datatype);
+    status = nanompi_socket_send(buf, msg_size, dest, comm); // for now, ignore tag
+    return status;
 }
 
-int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source,
-                            int tag, MPI_Comm comm, MPI_Status *status)
+// TODO: tags
+int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *st)
 {
-    return MPI_SUCCESS;
+    int status = MPI_SUCCESS;
+    size_t msg_size = count * nanompi_get_dtype_size(datatype);
+    status = nanompi_socket_recv(buf, msg_size, source, comm);
+    if(st) {
+        st->MPI_ERROR = status;
+        st->MPI_SOURCE = source;
+        st->MPI_TAG = tag;
+    }
+    return status;
 }
 
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)

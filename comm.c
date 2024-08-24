@@ -39,7 +39,7 @@ int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_si
 
     status = nanompi_init_socket_backend(nanompi_comm_world);
     if (status) {
-        printf("error in nanompi_init_group: %d\n", status);
+        printf("error in nanompi_init_socket_backend: %d\n", status);
         goto free_group;
     }
 
@@ -59,10 +59,14 @@ int nanompi_free_comm(nanompi_communicator_t *comm)
 {
     int status;
 
+    status = nanompi_free_socket_backend(comm);
+    if (status) {
+        printf("Error freeing comm socket backend\n");
+    }
+
     status = nanompi_free_group(comm->local_group);
     if (status) {
         printf("Error freeing comm->local_group\n");
-        return status;
     }
 
     free(comm);

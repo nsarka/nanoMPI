@@ -1,7 +1,7 @@
 .PHONY : clean
 
 CC = gcc
-CPPFLAGS = -g -fPIC
+CPPFLAGS = -g -fPIC -O0
 LDFLAGS = -shared
 
 SOURCES = mpi.c comm.c group.c proc.c op.c dtype.c util.c socket_backend.c
@@ -11,12 +11,12 @@ OBJECTS = $(SOURCES:.c=.o)
 all: libmpi.so mpirun tests
 
 clean:
-	rm -f $(OBJECTS) libmpi.so test_mpi
+	rm -f $(OBJECTS) libmpi.so
 
 libmpi.so: $(OBJECTS)
 	$(CC) $(CPPFLAGS)  $(OBJECTS) -o $@ $(LDFLAGS)
 
-mpirun: mpirun.c
+mpirun: mpirun.c libmpi.so
 	$(CC) -g -o $@ mpirun.c -L. -I. -lpthread
 
 tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_scatter_gather test_alltoall

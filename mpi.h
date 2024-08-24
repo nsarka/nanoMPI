@@ -18,7 +18,7 @@ int MPI_Finalize(void);
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
                             int tag, MPI_Comm comm);
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source,
-                            int tag, MPI_Comm comm, MPI_Status *status);
+                            int tag, MPI_Comm comm, MPI_Status *st);
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
 int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                MPI_Op op, int root, MPI_Comm comm);
