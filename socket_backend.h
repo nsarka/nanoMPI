@@ -1,6 +1,8 @@
 #ifndef NANOMPI_SOCKET_BACKEND_H
 #define NANOMPI_SOCKET_BACKEND_H
 
+#include <stddef.h>
+
 typedef struct nanompi_communicator_t nanompi_communicator_t;
 
 /*

@@ -3,7 +3,12 @@
 #include "mpi.h"
 
 int main(int argc, char** argv) {
-    MPI_Init(NULL, NULL);
+    int status;
+    status = MPI_Init(NULL, NULL);
+    if (status) {
+        printf("Error in MPI_Init\n");
+        return 1;
+    }
 
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -15,4 +20,5 @@ int main(int argc, char** argv) {
            world_rank, world_size);
 
     MPI_Finalize();
+    return 0;
 }

@@ -58,7 +58,7 @@ static int init_server(nanompi_communicator_t *comm)
         goto close;
     }
 
-    for(i = rank; i >= 0; i--) {
+    for(i = rank - 1; i >= 0; i--) {
         // We dont actually know what rank is connecting to us. Just pretend it's in rank-order for now and sort client_fds later
         comm->socket_info.client_fds[i] = accept(comm->socket_info.server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     }
@@ -122,11 +122,13 @@ int nanompi_init_socket_backend(nanompi_communicator_t *comm)
     }
 
     status = init_clients(comm);
-    if (!status) {
+    if (status) {
+        printf("error in init_clients\n");
         goto free;
     }
     status = init_server(comm);
-    if (!status) {
+    if (status) {
+        printf("error in init_server\n");
         goto free;
     }
 
@@ -136,6 +138,7 @@ exit:
     return status;
 free:
     free(comm->socket_info.client_fds);
+    comm->socket_info.client_fds = NULL;
 }
 
 int nanompi_free_socket_backend(nanompi_communicator_t *comm)

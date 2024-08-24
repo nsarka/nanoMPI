@@ -11,7 +11,7 @@ OBJECTS = $(SOURCES:.c=.o)
 all: libmpi.so mpirun tests
 
 clean:
-	rm -f $(OBJECTS) libmpi.so
+	rm -f $(OBJECTS) libmpi.so 
 
 libmpi.so: $(OBJECTS)
 	$(CC) $(CPPFLAGS)  $(OBJECTS) -o $@ $(LDFLAGS)
