@@ -47,7 +47,9 @@ static int init_server(nanompi_communicator_t *comm)
     address.sin_port = htons(grp_proc_pointers[rank]->port);
 
     if (bind(comm->socket_info.server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        perror("server: bind failed");
+        char bind_msg[1024] = {'\0'};
+        snprintf( bind_msg, 1023, "function %s, file %s, line %d, rank %d, port %d, bind error", __func__, __FILE__, __LINE__, rank, grp_proc_pointers[rank]->port);
+        perror(bind_msg);
         status = MPI_ERR_OTHER;
         goto close;
     }
