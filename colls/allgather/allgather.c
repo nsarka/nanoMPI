@@ -73,3 +73,18 @@ int MPI_Allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
 
     return MPI_SUCCESS;
 }
+
+int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                  void *recvbuf, int recvcount, MPI_Datatype recvtype,
+                  MPI_Comm comm)
+{
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+
+    for (int root = 0; root < size; root++) {
+        MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm);
+    }
+
+    return MPI_SUCCESS;
+}

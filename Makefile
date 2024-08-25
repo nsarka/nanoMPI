@@ -2,10 +2,10 @@
 
 CC = gcc
 CXX = g++
-CPPFLAGS = -g -fPIC -O0
+CPPFLAGS = -g -fPIC -O0 -I.
 LDFLAGS = -shared
 
-SOURCES_C = mpi.c comm.c group.c proc.c op.c dtype.c util.c socket_backend.c
+SOURCES_C = mpi.c comm.c group.c proc.c op.c dtype.c util.c socket_backend.c colls/tuner.c colls/allgather/allgather.c colls/allgatherv/allgatherv.c colls/allreduce/allreduce.c colls/alltoall/alltoall.c colls/bcast/bcast.c colls/gather/gather.c colls/reduce/reduce.c colls/reduce_scatter/reduce_scatter.c colls/scatter/scatter.c
 SOURCES_CPP = self_backend.cpp
 OBJECTS_CPP = $(SOURCES_CPP:.cpp=.o)
 OBJECTS_C = $(SOURCES_C:.c=.o) 

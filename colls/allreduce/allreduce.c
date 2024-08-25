@@ -144,3 +144,16 @@ int MPI_Allreduce_reduce_scatter_allgather(const void *sendbuf, void *recvbuf, i
 
     return MPI_SUCCESS;
 }
+
+int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
+                  MPI_Op op, MPI_Comm comm)
+{
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+
+    MPI_Reduce(sendbuf, recvbuf, count, datatype, op, 0, comm);
+    MPI_Bcast(recvbuf, count, datatype, 0, comm);
+
+    return MPI_SUCCESS;
+}
