@@ -38,6 +38,7 @@ tests/test_alltoall
 tests/test_bcast
 tests/test_reduce
 tests/test_scatter_gather
+tests/test_self
 .vscode/
 hostfile
 mpirun
