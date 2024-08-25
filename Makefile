@@ -1,20 +1,22 @@
 .PHONY : clean
 
 CC = gcc
+CXX = g++
 CPPFLAGS = -g -fPIC -O0
 LDFLAGS = -shared
 
-SOURCES = mpi.c comm.c group.c proc.c op.c dtype.c util.c socket_backend.c
-HEADERS = mpi.h comm.h group.h proc.h status.h op.h dtype.h util.h socket_backend.h
-OBJECTS = $(SOURCES:.c=.o)
+SOURCES_C = mpi.c comm.c group.c proc.c op.c dtype.c util.c socket_backend.c
+SOURCES_CPP = self_backend.cpp
+OBJECTS_CPP = $(SOURCES_CPP:.cpp=.o)
+OBJECTS_C = $(SOURCES_C:.c=.o) 
 
 all: libmpi.so mpirun tests
 
 clean:
-	rm -f $(OBJECTS) libmpi.so 
+	rm -f $(OBJECTS_C) $(OBJECTS_CPP) libmpi.so 
 
-libmpi.so: $(OBJECTS)
-	$(CC) $(CPPFLAGS)  $(OBJECTS) -o $@ $(LDFLAGS)
+libmpi.so: $(OBJECTS_C) $(OBJECTS_CPP)
+	$(CXX) $(CPPFLAGS) $(OBJECTS_C) $(OBJECTS_CPP) -o $@ $(LDFLAGS)
 
 mpirun: mpirun.c libmpi.so
 	$(CC) -g -o $@ mpirun.c -L. -I. -lpthread
