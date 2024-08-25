@@ -61,7 +61,15 @@ static int init_server(nanompi_communicator_t *comm)
     }
 
     for(i = rank - 1; i >= 0; i--) {
-        // We dont actually know what rank is connecting to us. Just pretend it's in rank-order for now and sort client_fds later
+        // Here "address" is a wildcard--meaning accept a connection from any address. However, since connect/accept is blocking and we "connect"
+        // to the next higher/lower rank, we fill out client_fds in rank order
+        // e.g. ranks are 0 1 2
+        // 0 connects to 1 and blocks
+        // 1 connects to 2 and blocks
+        // 2 accepts 1, unblocking 1. 1 is in rank order in 2's client_fds
+        // 2 accepts 0, 0 is in rank order in 2's client_fds
+        // 1 accepts 0, 0 is in rank order in 1's client_fds
+        // TODO: is this explanation necessary?
         comm->socket_info.client_fds[i] = accept(comm->socket_info.server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     }
 
