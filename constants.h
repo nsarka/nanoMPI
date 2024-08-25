@@ -23,7 +23,7 @@
 /*
  * Socket info
  */
-#define PORT 44083
+#define PORT 40083
 
 
 #endif
