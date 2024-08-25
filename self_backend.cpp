@@ -44,13 +44,12 @@ extern "C" int nanompi_self_send(const void *buf, int count, MPI_Datatype dataty
 
 extern "C" int nanompi_self_recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm)
 {
-    size_t msg_size = count * nanompi_get_dtype_size(datatype);
     vector<Send*> &sendq = map[comm];
     vector<Send*>::iterator iter;
 
     for (iter = sendq.begin(); iter != sendq.end(); ) {
         if ((*iter)->count <= count && (*iter)->datatype.id == datatype.id) {
-            memcpy(buf, (*iter)->libbuf, msg_size);
+            memcpy(buf, (*iter)->libbuf, (*iter)->count * nanompi_get_dtype_size((*iter)->datatype));
             delete *iter;
             sendq.erase(iter);
             return MPI_SUCCESS;
