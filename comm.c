@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 #include "comm.h"
-#include "socket_backend.h"
+#include "backends/socket/socket_backend.h"
 
 MPI_Comm nanompi_comm_world;
 
