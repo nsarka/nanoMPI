@@ -4,8 +4,8 @@
 
 #include "mpi.h"
 #include "util.h"
-#include "socket_backend.h"
-#include "self_backend.h"
+#include "backends/socket/socket_backend.h"
+#include "backends/self/self_backend.h"
 
 int MPI_Init(int *argc, char ***argv)
 {

@@ -1,7 +1,7 @@
 #ifndef NANOMPI_PROC_H
 #define NANOMPI_PROC_H
 
-#include "socket_backend.h"
+#include "backends/socket/socket_backend.h"
 #include "constants.h"
 
 typedef struct nanompi_proc_t {
