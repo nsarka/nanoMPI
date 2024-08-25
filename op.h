@@ -25,7 +25,7 @@ typedef void (nanompi_op_fn_t)(const void *in, void *out, int *count, MPI_Dataty
 
 typedef struct nanompi_op_t {
     enum nanompi_op_type op_type;
-    nanompi_op_fn_t *fn_ptr;
+    nanompi_op_fn_t *fn;
 } nanompi_op_t;
 
 typedef nanompi_op_t MPI_Op;

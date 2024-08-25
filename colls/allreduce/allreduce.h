@@ -1,0 +1,6 @@
+#ifndef NANOMPI_ALLREDUCE_H
+#define NANOMPI_ALLREDUCE_H
+
+
+
+#endif

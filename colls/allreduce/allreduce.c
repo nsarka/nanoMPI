@@ -3,23 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "mpi.h"
 #include "util.h"
-
-// Helper function for element-wise sum (you can extend this for other operations)
-static void sum_elements(void *in, void *inout, int *len, MPI_Datatype *dtype)
-{
-    int count = *len;
-    if (*dtype == MPI_INT) {
-        int *a = (int *)in;
-        int *b = (int *)inout;
-        for (int i = 0; i < count; i++)
-            b[i] += a[i];
-    }
-    // TODO: Add more data types?
-}
-
-// TODO: Add more reduction ops?
+#include "../allgatherv/allgatherv.h"
 
 int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                        MPI_Op op, MPI_Comm comm)
@@ -45,7 +32,7 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
         MPI_Recv(temp_buf, count, datatype, recv_from, 0, comm, MPI_STATUS_IGNORE);
 
         // Perform reduction operation
-        sum_elements(temp_buf, recvbuf, count, datatype);
+        op.fn(temp_buf, recvbuf, &count, &datatype);
 
         // Prepare for next iteration
         memcpy(send_buf, temp_buf, count * type_size);
@@ -76,7 +63,7 @@ int MPI_Allreduce_tree(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
         if ((rank % (2 * stride)) == 0) {
             if (rank + stride < size) {
                 MPI_Recv(temp_buf, count, datatype, rank + stride, 0, comm, MPI_STATUS_IGNORE);
-                sum_elements(temp_buf, recvbuf, &count, &datatype);
+                op.fn(temp_buf, recvbuf, &count, &datatype);
             }
         } else {
             MPI_Send(recvbuf, count, datatype, rank - stride, 0, comm);

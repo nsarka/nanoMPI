@@ -30,8 +30,8 @@ int MPI_Allgather_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
         int send_to = (rank + i) % size;
         int recv_from = (rank - i + size) % size;
 
-        MPI_Send(send_data, send_count, send_type, dest, tag, comm);
-        MPI_Recv(recv_data, recv_count, recv_type, source, tag, comm, MPI_STATUS_IGNORE);
+        //MPI_Send(send_data, send_count, sendtype, dest, tag, comm);
+        //MPI_Recv(recv_data, recv_count, recvtype, source, tag, comm, MPI_STATUS_IGNORE);
 
         memcpy(temp_buf, recvbuf, total_size);
     }
@@ -67,8 +67,8 @@ int MPI_Allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
         int send_offset = ((rank - i + size) % size) * recv_size;
         int recv_offset = ((rank - i - 1 + size) % size) * recv_size;
 
-        MPI_Send(send_data, send_count, send_type, dest, tag, comm);
-        MPI_Recv(recv_data, recv_count, recv_type, source, tag, comm, MPI_STATUS_IGNORE);
+        //MPI_Send(send_data, send_count, send_type, dest, tag, comm);
+        //MPI_Recv(recv_data, recv_count, recv_type, source, tag, comm, MPI_STATUS_IGNORE);
     }
 
     return MPI_SUCCESS;

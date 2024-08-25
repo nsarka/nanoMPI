@@ -20,3 +20,8 @@ nanompi_dtype_t nanompi_dtype_char =
     .id = NANOMPI_DTYPE_CHAR,
     .size = sizeof(char)
 };
+
+int MPI_Type_size(MPI_Datatype datatype, int *size)
+{
+    return datatype.size;
+}

@@ -1,6 +1,9 @@
 #include "mpi.h"
 #include "util.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 int MPI_Reduce_scatter(const void *sendbuf, void *recvbuf, const int recvcounts[],
                        MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {

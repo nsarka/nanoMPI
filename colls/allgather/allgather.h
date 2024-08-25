@@ -1,0 +1,6 @@
+#ifndef NANOMPI_ALLGATHER_H
+#define NANOMPI_ALLGATHER_H
+
+
+
+#endif
