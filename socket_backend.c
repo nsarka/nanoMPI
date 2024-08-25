@@ -142,8 +142,6 @@ int nanompi_init_socket_backend(nanompi_communicator_t *comm)
         goto free;
     }
 
-    //sort the client_fds < rank so that they're in rank order--accept might not have filled the array in order
-
 exit:
     return status;
 free:
