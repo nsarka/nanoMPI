@@ -21,7 +21,7 @@ libmpi.so: $(OBJECTS_C) $(OBJECTS_CPP)
 mpirun: mpirun.c libmpi.so
 	$(CC) -g -o $@ mpirun.c -L. -I. -lpthread
 
-tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_scatter_gather test_alltoall test_self
+tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_allreduce_ring test_scatter_gather test_alltoall test_self
 
 test_hello: libmpi.so
 	$(CC) -g -o tests/$@ tests/test_hello.c -L. -I. -lmpi
@@ -37,6 +37,9 @@ test_reduce: libmpi.so
 
 test_allreduce: libmpi.so
 	$(CC) -g -o tests/$@ tests/test_allreduce.c -L. -I. -lmpi
+
+test_allreduce_ring: libmpi.so
+	$(CC) -g -o tests/$@ tests/test_allreduce_ring.c -L. -I. -lmpi
 
 test_scatter_gather: libmpi.so
 	$(CC) -g -o tests/$@ tests/test_scatter_gather.c -L. -I. -lmpi

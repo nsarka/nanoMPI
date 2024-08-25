@@ -12,7 +12,7 @@ static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
             for (int i = *count; i >= 0; i--) {
                 ptr_out[i] = ptr_out[i] + ptr_in[i];
             }
-        }
+        } break;
         case NANOMPI_DTYPE_FLOAT:
         {
             const float *ptr_in = (float*) in;
@@ -20,7 +20,7 @@ static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
             for (int i = *count; i >= 0; i--) {
                 ptr_out[i] = ptr_out[i] + ptr_in[i];
             }
-        }
+        } break;
         case NANOMPI_DTYPE_CHAR:
         {
             const char *ptr_in = (char*) in;
@@ -28,10 +28,10 @@ static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
             for (int i = *count; i >= 0; i--) {
                 ptr_out[i] = ptr_out[i] + ptr_in[i];
             }
-        }
+        } break;
         default:
         {
-            printf("dtype not supported yet\n");
+            printf("dtype %d not supported yet\n", dtype->id);
         }
     }
 
