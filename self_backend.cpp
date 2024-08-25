@@ -16,10 +16,9 @@ public:
     void *libbuf;
     int count;
     MPI_Datatype datatype;
-    int dest;
     int tag; // TODO: handle tag, just change map to <pair<tag, comm>, vector<Send*>>
 
-    Send(const void *userbuf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm) : userbuf(userbuf), count(count), datatype(datatype), dest(dest), tag(tag) {
+    Send(const void *userbuf, int count, MPI_Datatype datatype, int tag, MPI_Comm comm) : userbuf(userbuf), count(count), datatype(datatype), tag(tag) {
         size_t msg_size = count * nanompi_get_dtype_size(datatype);
         libbuf = malloc(msg_size);
         memcpy(libbuf, userbuf, msg_size);
@@ -38,7 +37,7 @@ extern "C" int nanompi_self_send(const void *buf, int count, MPI_Datatype dataty
         cout << "error: rank using self send but not to itself!" << endl;
     }
 
-    map[comm].push_back(new Send(buf, count, datatype, dest, tag, comm));
+    map[comm].push_back(new Send(buf, count, datatype, tag, comm));
 
     return MPI_SUCCESS;
 }
