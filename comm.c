@@ -23,7 +23,7 @@ int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_si
 {
     int status = MPI_SUCCESS;
 
-    nanompi_comm_world = malloc(sizeof(nanompi_communicator_t));
+    nanompi_comm_world = (nanompi_communicator_t*) malloc(sizeof(nanompi_communicator_t));
     if (!nanompi_comm_world) {
         printf("Error allocating nanompi_communicator_t\n");
         return MPI_ERR_OTHER;
@@ -57,7 +57,7 @@ free_comm_world:
 
 int nanompi_free_comm(nanompi_communicator_t *comm)
 {
-    int status;
+    int status = MPI_SUCCESS;
 
     status = nanompi_free_socket_backend(comm);
     if (status) {
@@ -70,4 +70,5 @@ int nanompi_free_comm(nanompi_communicator_t *comm)
     }
 
     free(comm);
+    return status;
 }

@@ -125,7 +125,7 @@ int nanompi_init_socket_backend(nanompi_communicator_t *comm)
     int status = MPI_SUCCESS;
     int size = comm->local_group->grp_proc_count;
 
-    comm->socket_info.client_fds = malloc(sizeof(int) * size);
+    comm->socket_info.client_fds = (int*) malloc(sizeof(int) * size);
     if (!comm->socket_info.client_fds) {
         printf("error mallocing client fds\n");
         status = MPI_ERR_OTHER;
@@ -149,6 +149,7 @@ exit:
 free:
     free(comm->socket_info.client_fds);
     comm->socket_info.client_fds = NULL;
+    goto exit;
 }
 
 int nanompi_free_socket_backend(nanompi_communicator_t *comm)

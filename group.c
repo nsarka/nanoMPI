@@ -19,7 +19,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
         goto exit;
     }
 
-    group = malloc(sizeof(nanompi_group_t));
+    group = (nanompi_group_t*) malloc(sizeof(nanompi_group_t));
     if (!group) {
         printf("Error: OOM allocating nanompi_group_t\n");
         goto close;
@@ -29,7 +29,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
     group->grp_my_rank = rank;
     group->grp_proc_count = world_size;
 
-    group->grp_proc_pointers = malloc(sizeof(nanompi_proc_t *) * world_size);
+    group->grp_proc_pointers = (nanompi_proc_t**) malloc(sizeof(nanompi_proc_t *) * world_size);
     if (!group->grp_proc_pointers) {
         printf("Error: OOM allocating group->grp_proc_pointers\n");
         goto free_group;
@@ -46,7 +46,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
             continue;
         }
 
-        group->grp_proc_pointers[i] = malloc(sizeof(nanompi_proc_t));
+        group->grp_proc_pointers[i] = (nanompi_proc_t*) malloc(sizeof(nanompi_proc_t));
         if (!group->grp_proc_pointers[i]) {
             printf("Error: OOM allocating nanompi_proc_t\n");
             status = MPI_ERR_OTHER;
@@ -89,4 +89,6 @@ int nanompi_free_group(nanompi_group_t *group)
 
     free(group->grp_proc_pointers);
     free(group);
+
+    return status;
 }

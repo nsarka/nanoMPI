@@ -5,6 +5,7 @@
 #include "mpi.h"
 #include "util.h"
 #include "socket_backend.h"
+#include "self_backend.h"
 
 int MPI_Init(int *argc, char ***argv)
 {
@@ -211,7 +212,7 @@ int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     MPI_Comm_size(comm, &size);
 
     // First, gather all data to root (rank 0)
-    MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcounts, recvtype, 0, comm);
+    //MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcounts, recvtype, 0, comm); // recvcounts incorrect here
 
     // Then, broadcast the gathered data to all processes
     int total_recv_count = 0;
