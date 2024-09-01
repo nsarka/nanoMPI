@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int MPI_Reduce_scatter(const void *sendbuf, void *recvbuf, const int recvcounts[],
+int MPI_Reduce_scatter_basic(const void *sendbuf, void *recvbuf, const int recvcounts[],
                        MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
     int rank, size;

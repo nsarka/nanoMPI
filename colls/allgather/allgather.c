@@ -74,7 +74,7 @@ int MPI_Allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
     return MPI_SUCCESS;
 }
 
-int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPI_Allgather_basic(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                   void *recvbuf, int recvcount, MPI_Datatype recvtype,
                   MPI_Comm comm)
 {

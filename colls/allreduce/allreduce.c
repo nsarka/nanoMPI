@@ -132,7 +132,7 @@ int MPI_Allreduce_reduce_scatter_allgather(const void *sendbuf, void *recvbuf, i
     return MPI_SUCCESS;
 }
 
-int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
+int MPI_Allreduce_basic(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                   MPI_Op op, MPI_Comm comm)
 {
     int rank, size;
