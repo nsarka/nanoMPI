@@ -8,15 +8,11 @@
 #include "util.h"
 #include "../allgatherv/allgatherv.h"
 
-// TODO: comm_size-1 sendrecvs of count/comm_size element segments, followed by a comm_size-1 sendrecv ring
-// to allgather the reduced segments
+// Not bandwidth optimal since we're doing extra sends and reductions.
+// The ring algorithm normally will do p-1 sends/recvs of size count/p with the
+// between them reduction, followed by a ring allgather of size count/p,
+// where p = comm size
 int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
-                       MPI_Op op, MPI_Comm comm)
-{
-    return MPI_Allreduce_ring_non_bw_optimal(sendbuf, recvbuf, count, datatype, op, comm);
-}
-
-int MPI_Allreduce_ring_non_bw_optimal(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                        MPI_Op op, MPI_Comm comm)
 {
     int rank, size;
