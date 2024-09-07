@@ -26,11 +26,9 @@ int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                    void *recvbuf, const int *recvcounts, const int *displs,
                    MPI_Datatype recvtype, MPI_Comm comm)
 {
-    int status;
-    status = MPI_Allgatherv_basic(sendbuf, sendcount, sendtype,
-                   recvbuf, recvcounts, displs,
-                   recvtype, comm);
-    return status;
+    return MPI_Allgatherv_basic(sendbuf, sendcount, sendtype,
+                                recvbuf, recvcounts, displs,
+                                recvtype, comm);
 }
 
 int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
