@@ -54,57 +54,43 @@ int MPI_Alltoall(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                  void *recvbuf, int recvcount, MPI_Datatype recvtype,
                  MPI_Comm comm)
 {
-    int status;
-    status = MPI_Alltoall_basic(sendbuf, sendcount, sendtype, recvbuf,
-                                recvcount, recvtype, comm);
-    return status;
+    return MPI_Alltoall_basic(sendbuf, sendcount, sendtype, recvbuf,
+                              recvcount, recvtype, comm);
 }
 
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)
 {
-    int status;
-    status = MPI_Bcast_basic(buffer, count, datatype, root, comm);
-    return status;
+    return MPI_Bcast_basic(buffer, count, datatype, root, comm);
 }
 
 int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                int root, MPI_Comm comm)
 {
-    int status;
-    status = MPI_Gather_basic(sendbuf, sendcount, sendtype, recvbuf,
-                              recvcount, recvtype, root, comm);
-    return status;
+    return MPI_Gather_basic(sendbuf, sendcount, sendtype, recvbuf,
+                            recvcount, recvtype, root, comm);
 }
 
 int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                MPI_Op op, int root, MPI_Comm comm)
 {
-    int status;
-    status = MPI_Reduce_basic(sendbuf, recvbuf, count, datatype, op, root, comm);
-    return status;
+    return MPI_Reduce_basic(sendbuf, recvbuf, count, datatype, op, root, comm);
 }
 
 int MPI_Reduce_scatter(const void *sendbuf, void *recvbuf, const int recvcounts[],
                        MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
-    int status;
-    status = MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm);
-    return status;
+    return MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm);
 }
 
 int MPI_Scatter(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                 void *recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm)
 {
-    int status;
-    status = MPI_Scatter_basic(sendbuf, sendcount, sendtype, recvbuf,
-                               recvcount, recvtype, root, comm);
-    return status;
+    return MPI_Scatter_basic(sendbuf, sendcount, sendtype, recvbuf,
+                             recvcount, recvtype, root, comm);
 }
 
 int MPI_Barrier(MPI_Comm comm)
 {
-    int status;
-    status = MPI_Barrier_basic(comm);
-    return status;
+    return MPI_Barrier_basic(comm);
 }
