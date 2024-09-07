@@ -85,5 +85,7 @@ int MPI_Scatter(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
 
 int MPI_Barrier(MPI_Comm comm)
 {
-    return MPI_Barrier_basic(comm);
+    int status;
+    status = MPI_Barrier_basic(comm);
+    return status;
 }

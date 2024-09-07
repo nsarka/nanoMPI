@@ -51,7 +51,7 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
     return status;
 }
 
-// TODO: tags, MPI_ANY_SOURCE, matching with a variable (but lesser than) count the user passed, etc.
+// TODO: tags, MPI_ANY_SOURCE, matching with a variable (but lesser than) count that the user passed, etc.
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *st)
 {
     int status = MPI_SUCCESS;

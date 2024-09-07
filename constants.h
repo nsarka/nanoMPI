@@ -21,7 +21,7 @@
 #define MPI_ERR_UNSUPPORTED_OPERATION 52
 
 /*
- * Socket info
+ * Socket info--random port
  */
 #define PORT 49483
 
