@@ -16,5 +16,6 @@ static inline size_t nanompi_get_msg_size(MPI_Datatype dtype, int count)
 void nanompi_init_clock();
 
 double MPI_Wtime(void);
+int MPI_Abort(MPI_Comm comm, int errorcode);
 
 #endif

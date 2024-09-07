@@ -42,6 +42,7 @@ tests/test_reduce
 tests/test_scatter_gather
 tests/test_self
 tests/test_wtime
+benchmarks/benchmark_allreduce
 .vscode/
 hostfile
 mpirun

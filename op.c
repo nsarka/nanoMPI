@@ -21,6 +21,14 @@ static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
                 ptr_out[i] = ptr_out[i] + ptr_in[i];
             }
         } break;
+        case NANOMPI_DTYPE_DOUBLE:
+        {
+            const double *ptr_in = (double*) in;
+            double *ptr_out = (double*) out;
+            for (int i = *count; i >= 0; i--) {
+                ptr_out[i] = ptr_out[i] + ptr_in[i];
+            }
+        } break;
         case NANOMPI_DTYPE_CHAR:
         case NANOMPI_DTYPE_BYTE:
         {

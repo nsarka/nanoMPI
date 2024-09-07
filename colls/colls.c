@@ -78,7 +78,7 @@ int MPI_Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datat
 int MPI_Reduce_scatter(const void *sendbuf, void *recvbuf, const int recvcounts[],
                        MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
-    return MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm);
+    return MPI_Reduce_scatter_basic(sendbuf, recvbuf, recvcounts, datatype, op, comm);
 }
 
 int MPI_Scatter(const void *sendbuf, int sendcount, MPI_Datatype sendtype,

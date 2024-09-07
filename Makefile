@@ -10,7 +10,7 @@ SOURCES_CPP = backends/self/self_backend.cpp
 OBJECTS_CPP = $(SOURCES_CPP:.cpp=.o)
 OBJECTS_C = $(SOURCES_C:.c=.o) 
 
-all: libmpi.so mpirun tests
+all: libmpi.so mpirun benchmarks tests
 
 clean:
 	rm -f $(OBJECTS_C) $(OBJECTS_CPP) libmpi.so 
@@ -20,6 +20,11 @@ libmpi.so: $(OBJECTS_C) $(OBJECTS_CPP)
 
 mpirun: mpirun.c libmpi.so
 	$(CC) -g -o $@ mpirun.c -L. -I. -lpthread
+
+benchmarks: benchmark_allreduce
+
+benchmark_allreduce: libmpi.so
+	$(CC) -g -o benchmarks/$@ benchmarks/benchmark_allreduce.c -L. -I. -lmpi
 
 tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_allreduce_ring test_scatter_gather test_alltoall test_self test_wtime test_barrier test_allreduce_tree
 

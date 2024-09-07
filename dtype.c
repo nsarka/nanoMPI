@@ -15,6 +15,12 @@ nanompi_dtype_t nanompi_dtype_float =
     .size = sizeof(float)
 };
 
+nanompi_dtype_t nanompi_dtype_double =
+{
+    .id = NANOMPI_DTYPE_DOUBLE,
+    .size = sizeof(double)
+};
+
 nanompi_dtype_t nanompi_dtype_char =
 {
     .id = NANOMPI_DTYPE_CHAR,
