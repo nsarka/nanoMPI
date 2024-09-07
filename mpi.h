@@ -12,6 +12,7 @@
 #include "dtype.h"
 #include "constants.h"
 #include "colls/colls.h"
+#include "util.h"
 
 int MPI_Init(int *argc, char ***argv);
 int MPI_Finalize(void);

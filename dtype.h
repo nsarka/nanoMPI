@@ -25,6 +25,7 @@ extern MPI_Datatype nanompi_dtype_char;
 #define MPI_INT nanompi_dtype_int
 #define MPI_FLOAT nanompi_dtype_float
 #define MPI_CHAR nanompi_dtype_char
+#define MPI_AINT ptrdiff_t
 
 int MPI_Type_size(MPI_Datatype datatype, int *size);
 

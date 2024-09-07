@@ -15,6 +15,10 @@ typedef nanompi_communicator_t *MPI_Comm;
 extern MPI_Comm nanompi_comm_world;
 #define MPI_COMM_WORLD nanompi_comm_world
 
+/* Comm NULL */
+extern MPI_Comm nanompi_comm_null;
+#define MPI_COMM_NULL nanompi_comm_null
+
 int MPI_Comm_rank(MPI_Comm comm, int *rank);
 int MPI_Comm_size(MPI_Comm comm, int *size);
 

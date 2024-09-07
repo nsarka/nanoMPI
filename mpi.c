@@ -14,6 +14,9 @@ int MPI_Init(int *argc, char ***argv)
     int world_size = atoi(getenv("NANOMPI_WORLD_SIZE"));
     char *hostfile = getenv("NANOMPI_HOSTFILE");
 
+    // For MPI_Wtime
+    nanompi_init_clock();
+
     status = nanompi_init_comm(&nanompi_comm_world, my_rank, world_size, hostfile);
     if (status) {
         printf("Error in nanompi_init_comm\n");

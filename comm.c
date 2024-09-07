@@ -6,6 +6,7 @@
 #include "backends/socket/socket_backend.h"
 
 MPI_Comm nanompi_comm_world;
+MPI_Comm nanompi_comm_null;
 
 int MPI_Comm_rank(MPI_Comm comm, int *rank)
 {
@@ -23,6 +24,10 @@ int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_si
 {
     int status = MPI_SUCCESS;
 
+    // MPI_COMM_NULL
+    nanompi_comm_null = NULL;
+
+    // MPI_COMM_WORLD
     nanompi_comm_world = (nanompi_communicator_t*) malloc(sizeof(nanompi_communicator_t));
     if (!nanompi_comm_world) {
         printf("Error allocating nanompi_communicator_t\n");
