@@ -1,5 +1,5 @@
-#ifndef NANOMPI_TUNER_H
-#define NANOMPI_TUNER_H
+#ifndef NANOMPI_COLLS_H
+#define NANOMPI_COLLS_H
 
 #include "mpi.h"
 #include "allgather/allgather.h"
@@ -11,7 +11,6 @@
 #include "reduce/reduce.h"
 #include "reduce_scatter/reduce_scatter.h"
 #include "scatter/scatter.h"
-
-
+#include "barrier/barrier.h"
 
 #endif

@@ -5,7 +5,7 @@ CXX = g++
 CPPFLAGS = -g -fPIC -O0 -I.
 LDFLAGS = -shared
 
-SOURCES_C = mpi.c comm.c group.c proc.c op.c dtype.c util.c backends/socket/socket_backend.c colls/colls.c colls/allgather/allgather.c colls/allgatherv/allgatherv.c colls/allreduce/allreduce.c colls/alltoall/alltoall.c colls/bcast/bcast.c colls/gather/gather.c colls/reduce/reduce.c colls/reduce_scatter/reduce_scatter.c colls/scatter/scatter.c
+SOURCES_C = mpi.c comm.c group.c proc.c op.c dtype.c util.c backends/socket/socket_backend.c colls/colls.c colls/allgather/allgather.c colls/allgatherv/allgatherv.c colls/allreduce/allreduce.c colls/alltoall/alltoall.c colls/bcast/bcast.c colls/gather/gather.c colls/reduce/reduce.c colls/reduce_scatter/reduce_scatter.c colls/scatter/scatter.c colls/barrier/barrier.c
 SOURCES_CPP = backends/self/self_backend.cpp
 OBJECTS_CPP = $(SOURCES_CPP:.cpp=.o)
 OBJECTS_C = $(SOURCES_C:.c=.o) 
@@ -21,7 +21,7 @@ libmpi.so: $(OBJECTS_C) $(OBJECTS_CPP)
 mpirun: mpirun.c libmpi.so
 	$(CC) -g -o $@ mpirun.c -L. -I. -lpthread
 
-tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_allreduce_ring test_scatter_gather test_alltoall test_self test_wtime
+tests: test_hello test_pt2pt test_bcast test_reduce test_allreduce test_allreduce_ring test_scatter_gather test_alltoall test_self test_wtime test_barrier
 
 test_hello: libmpi.so
 	$(CC) -g -o tests/$@ tests/test_hello.c -L. -I. -lmpi
@@ -52,3 +52,6 @@ test_self: libmpi.so
 
 test_wtime: libmpi.so
 	$(CC) -g -o tests/$@ tests/test_wtime.c -L. -I. -lmpi
+
+test_barrier: libmpi.so
+	$(CC) -g -o tests/$@ tests/test_barrier.c -L. -I. -lmpi

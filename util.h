@@ -9,6 +9,7 @@ static inline int nanompi_get_dtype_size(MPI_Datatype dtype)
 }
 
 void nanompi_init_clock();
+
 double MPI_Wtime(void);
 
 #endif
