@@ -7,8 +7,18 @@ int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                   MPI_Comm comm)
 {
     int status;
-    status = MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf,
-                           recvcount, recvtype, comm);
+    size_t msg_size;
+
+    msg_size = nanompi_get_msg_size(sendtype, sendcount);
+
+    if (msg_size < 4096) {
+        status = MPI_Allgather_bruck(sendbuf, sendcount, sendtype, recvbuf,
+                                     recvcount, recvtype, comm);
+    } else {
+        status = MPI_Allgather_ring(sendbuf, sendcount, sendtype, recvbuf,
+                                    recvcount, recvtype, comm);
+    }
+
     return status;
 }
 
@@ -27,7 +37,16 @@ int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype da
                   MPI_Op op, MPI_Comm comm)
 {
     int status;
-    status = MPI_Allreduce_ring(sendbuf, recvbuf, count, datatype, op, comm);
+    size_t msg_size;
+
+    msg_size = nanompi_get_msg_size(datatype, count);
+
+    if (msg_size < 16384) {
+        status = MPI_Allreduce_tree(sendbuf, recvbuf, count, datatype, op, comm);
+    } else {
+        status = MPI_Allreduce_ring(sendbuf, recvbuf, count, datatype, op, comm);
+    }
+
     return status;
 }
 

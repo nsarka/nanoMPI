@@ -35,6 +35,7 @@ tests/test_hello
 tests/test_pt2pt
 tests/test_allreduce
 tests/test_allreduce_ring
+tests/test_allreduce_tree
 tests/test_alltoall
 tests/test_bcast
 tests/test_reduce

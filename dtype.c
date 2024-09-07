@@ -29,5 +29,6 @@ nanompi_dtype_t nanompi_dtype_byte =
 
 int MPI_Type_size(MPI_Datatype datatype, int *size)
 {
-    return datatype.size;
+    *size = datatype.size;
+    return MPI_SUCCESS;
 }
