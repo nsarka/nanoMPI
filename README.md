@@ -9,6 +9,7 @@ A minimal MPI Implementation loosely based on OpenMPI. nanoMPI has a few usecase
 
 - [Quickstart](#quickstart)
 - [Additional Resources](#additional-resources)
+- [Things To Be Aware Of](#things-to-be-aware-of)
 - [Roadmap](#roadmap)
 
 ## Quickstart
