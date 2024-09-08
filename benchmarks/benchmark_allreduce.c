@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define NUM_RUNS 100
+#define NUM_RUNS 1
 #define MAX_MESSAGE_SIZE 1048576  // 1 MB
 #define MIN_MESSAGE_SIZE 8        // 8 bytes
 
-double benchmark_allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
+double benchmark_allreduce(void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
     int rank;
     MPI_Comm_rank(comm, &rank);
 
@@ -29,38 +29,61 @@ double benchmark_allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype
     return (end_time - start_time) * 1e6 / NUM_RUNS;
 }
 
-int main(int argc, char** argv) {
-    MPI_Init(&argc, &argv);
+// Returns 1 if buffer was valid, 0 otherwise
+int data_validate(int *recvbuf, int count, int size)
+{
+    for (int i = 0; i < count; i++) {
+        if (recvbuf[i] != size) {
+            return 0;
+        }
+    }
+    return 1;
+}
 
+void data_reset(int *recvbuf, int count)
+{
+    for (int i = 0; i < count; i++) {
+        recvbuf[i] = 0;
+    }
+}
+
+int main(int argc, char **argv) {
+    MPI_Init(&argc, &argv);
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     // Allocate buffers for the maximum message size
-    double* sendbuf = (double*)malloc(MAX_MESSAGE_SIZE);
-    double* recvbuf = (double*)malloc(MAX_MESSAGE_SIZE);
+    int* sendbuf = (int*)malloc(MAX_MESSAGE_SIZE);
+    int* recvbuf = (int*)malloc(MAX_MESSAGE_SIZE);
 
     if (sendbuf == NULL || recvbuf == NULL) {
         fprintf(stderr, "Error: Could not allocate memory\n");
+        fflush(stderr);
         MPI_Abort(MPI_COMM_WORLD, 1);
     }
 
     // Initialize send buffer
-    for (int i = 0; i < MAX_MESSAGE_SIZE / sizeof(double); i++) {
-        sendbuf[i] = rank + 1;
+    for (int i = 0; i < MAX_MESSAGE_SIZE / sizeof(int); i++) {
+        sendbuf[i] = 1;
     }
 
     if (rank == 0) {
-        printf("Message Size (bytes)\tTime (microseconds)\n");
+        printf("%-25s %-20s %-20s\n", "Message Size (bytes)", "Latency (us)", "Validation");
+        fflush(stdout);
     }
 
     for (int message_size = MIN_MESSAGE_SIZE; message_size <= MAX_MESSAGE_SIZE; message_size *= 2) {
-        int count = message_size / sizeof(double);
-        double time = benchmark_allreduce(sendbuf, recvbuf, count, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        int count = message_size / sizeof(int);
+        double time = benchmark_allreduce(sendbuf, recvbuf, count, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+        int valid = data_validate(recvbuf, count, size);
+        data_reset(recvbuf, count);
 
         // Only the root process prints the results
         if (rank == 0) {
-            printf("%d\t\t\t%.2f\n", message_size, time);
+            printf("%-25d %-20.2f %-20s\n", message_size, time, valid ? "PASS" : "FAIL");
+            fflush(stdout);
         }
     }
 

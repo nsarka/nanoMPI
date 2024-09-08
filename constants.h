@@ -23,7 +23,7 @@
 /*
  * Socket info--random port
  */
-#define PORT 49113
+#define PORT 19113
 
 
 #endif

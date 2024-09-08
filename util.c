@@ -15,7 +15,7 @@ double MPI_Wtime(void)
 {
     struct timespec end;
     clock_gettime(CLOCK_MONOTONIC, &end);
-    return end.tv_sec - start.tv_sec;
+    return (((long)end.tv_sec*1e9L - (long)start.tv_sec*1e9L) + end.tv_nsec - start.tv_nsec) / 1e9L;
 }
 
 int MPI_Abort(MPI_Comm comm, int errorcode)
