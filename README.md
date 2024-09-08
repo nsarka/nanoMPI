@@ -132,7 +132,7 @@ echo -e "localhost\nlocalhost" > hostfile
 ```
 
 
-Run basic [hello world with MPI](tests/test_hello.c):
+#### Run Basic [Hello World With MPI](tests/test_hello.c):
 ```
 ./mpirun ./hostfile ./tests/test_hello
 ```
@@ -141,6 +141,36 @@ Which should output:
 ```
 Hello world from rank 0 out of 2 processors
 Hello world from rank 1 out of 2 processors
+```
+
+#### Run [MPI_Allreduce Benchmark](benchmarks/benchmark_allreduce.c)
+
+```
+./mpirun ./hostfile ./benchmarks/benchmark_allreduce
+```
+
+Which should output:
+
+```
+Message Size (bytes)      Latency (us)         Bus BW (MB/s)        Validation
+8                         47.01                0.1702               PASS
+16                        41.87                0.3822               PASS
+32                        36.82                0.8692               PASS
+64                        39.55                1.6180               PASS
+128                       76.70                1.6689               PASS
+256                       40.31                6.3505               PASS
+512                       119.03               4.3014               PASS
+1024                      93.79                10.9182              PASS
+2048                      97.00                21.1136              PASS
+4096                      49776.58             0.0823               PASS
+8192                      149.62               54.7506              PASS
+16384                     77.30                211.9644             PASS
+32768                     264.47               123.9025             PASS
+65536                     139.57               469.5430             PASS
+131072                    269.17               486.9470             PASS
+262144                    547.08               479.1712             PASS
+524288                    1076.73              486.9248             PASS
+1048576                   2896.33              362.0366             PASS
 ```
 
 ## Things To Be Aware Of
