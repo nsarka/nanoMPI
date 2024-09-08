@@ -40,7 +40,7 @@ int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype da
     msg_size = nanompi_get_msg_size(datatype, count);
 
     if (msg_size < 16384) {
-        status = MPI_Allreduce_ring(sendbuf, recvbuf, count, datatype, op, comm);
+        status = MPI_Allreduce_tree(sendbuf, recvbuf, count, datatype, op, comm);
     } else {
         status = MPI_Allreduce_ring(sendbuf, recvbuf, count, datatype, op, comm);
     }
