@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     }
 
     if (rank == 0) {
-        printf("%-25s %-20s %-20s\n", "Message Size (bytes)", "Latency (us)", "Validation");
+        printf("%-25s %-20s %-20s %-20s\n", "Message Size (bytes)", "Latency (us)", "Bus BW (MB/s)", "Validation");
         fflush(stdout);
     }
 
@@ -77,12 +77,14 @@ int main(int argc, char **argv) {
         int count = message_size / sizeof(int);
         double time = benchmark_allreduce(sendbuf, recvbuf, count, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
+        double busBW = ((message_size/1e6) / (time/1e6)) * (2*(size-1)/size); // Allreduce bus bandwidth = alg_bw * (2*(n-1)/n), from https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md
+
         int valid = data_validate(recvbuf, count, size);
         data_reset(recvbuf, count);
 
         // Only the root process prints the results
         if (rank == 0) {
-            printf("%-25d %-20.2f %-20s\n", message_size, time, valid ? "PASS" : "FAIL");
+            printf("%-25d %-20.2f %-20.8f %-20s\n", message_size, time, busBW, valid ? "PASS" : "FAIL");
             fflush(stdout);
         }
     }
