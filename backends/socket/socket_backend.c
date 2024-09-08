@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 #include <errno.h>
 
 #include "socket_backend.h"
@@ -30,13 +31,23 @@ static int init_server(nanompi_communicator_t *comm)
         goto exit;
     }
 
-    // Reuse addr and port to avoid pesky bind: address in use errors >:(
+    // Try to reuse addr and port to avoid pesky bind: address in use errors >:(
     // This is especially useful right now because the job launcher does not forward Ctrl+C signals to each process.
     // That means after every run that errors or is Ctrl+C'd out, we get more stray processes
-    // TODO: fix this
+    // TODO: It seems like this doesn't always work
     if (setsockopt(comm->socket_info.server_fd, SOL_SOCKET,
                    SO_REUSEADDR | SO_REUSEPORT, &opt,
                    sizeof(opt))) {
+        perror("setsockopt");
+        status = MPI_ERR_OTHER;
+        goto close;
+    }
+
+    // Turn off Nagle's algorithm
+    // Nagle's algorithm is an OS-level buffering solution. The idea is for chat-like applications where a user
+    // is typing in one byte at a time, the socket can coalesce (i.e., merge multiple small sends into one large send)
+    // these bytes to massively increase throughput by reducing the amount of control messages going back and forth
+    if (setsockopt(comm->socket_info.server_fd, IPPROTO_TCP, TCP_NODELAY, (char *) &opt, sizeof(opt))) {
         perror("setsockopt");
         status = MPI_ERR_OTHER;
         goto close;
