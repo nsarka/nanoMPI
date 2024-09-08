@@ -170,13 +170,23 @@ int nanompi_free_socket_backend(nanompi_communicator_t *comm)
 int nanompi_socket_send(const void *buffer, size_t msg_size, int to_rank, nanompi_communicator_t *comm)
 {
     int status = MPI_SUCCESS;
-    send(comm->socket_info.client_fds[to_rank], buffer, msg_size, 0);
+    size_t sent_bytes = 0;
+
+    while (sent_bytes != msg_size) {
+        sent_bytes += send(comm->socket_info.client_fds[to_rank], buffer + sent_bytes, msg_size - sent_bytes, 0);
+    }
+
     return status;
 }
 
 int nanompi_socket_recv(void *buffer, size_t msg_size, int from_rank, nanompi_communicator_t *comm)
 {
     int status = MPI_SUCCESS;
-    recv(comm->socket_info.client_fds[from_rank], buffer, msg_size, 0);
+    size_t recv_bytes = 0;
+
+    while (recv_bytes != msg_size) {
+        recv_bytes += recv(comm->socket_info.client_fds[from_rank], buffer + recv_bytes, msg_size - recv_bytes, 0);
+    }
+
     return status;
 }
