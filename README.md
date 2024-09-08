@@ -143,6 +143,15 @@ Hello world from rank 0 out of 2 processors
 Hello world from rank 1 out of 2 processors
 ```
 
+## Things To Be Aware Of
+
+The MPI standard allows MPI_Recv to partially fill the posted recvbuf if an incoming message matches the source, tag, and comm. Our implementation so far:
+
+- Requires each MPI_Send and MPI_Recv to match the buffer size, otherwise there may be a hang.
+- Ignores the tag
+
+These are todo items on the Roadmap.
+
 ## Additional Resources
 
 - [This page from NCCL](https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md) explains how to analyze the bandwidth of collectives
@@ -154,8 +163,33 @@ Hello world from rank 1 out of 2 processors
 We welcome contributions!
 
 - [x] Basic launcher
-- [ ] Socket implementation of point-to-point
+- [x] Socket implementation of point-to-point
 - [x] Basic Collectives
-- [ ] Collective algos
+- [x] Collective algos
+- [ ] Implement tag matching
+- [ ] Allow MPI_Recv to match with a send smaller than the recvbuf size
 - [ ] InfiniBand implementation of point-to-point
 - [ ] Basic benchmarks
+    - [ ] Collectives
+        - [ ] Allgather(v)
+        - [x] Allreduce
+        - [ ] Alltoall(v)
+        - [ ] Bcast
+        - [ ] Reduce
+        - [ ] Reduce_scatter(v)
+        - [ ] Scatter
+        - [ ] Barrier
+    - [ ] Point-to-Point
+        - [ ] Latency
+        - [ ] Bandwidth
+        - [ ] Bidirectional Bandwidth
+- [ ] PyTorch MPI Process group (PG) support
+    - [ ] Subcommunicator/group functions used by the PG
+        - [ ] MPI_Comm_group, MPI_Group_free
+        - [ ] MPI_Comm_create
+    - [ ] MPI_IN_PLACE
+    - [ ] MPI_Isend, MPI_Irecv
+    - [ ] Datatypes used by the PG
+    - [ ] MPI_Request, MPI_REQUEST_NULL
+    - [ ] MPI_Initialized()
+    - [ ] MPI_Init_thread, MPI_THREAD_SERIALIZED
