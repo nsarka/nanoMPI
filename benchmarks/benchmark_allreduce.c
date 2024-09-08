@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 
         // Only the root process prints the results
         if (rank == 0) {
-            printf("%-25d %-20.2f %-20.8f %-20s\n", message_size, time, busBW, valid ? "PASS" : "FAIL");
+            printf("%-25d %-20.2f %-20.4f %-20s\n", message_size, time, busBW, valid ? "PASS" : "FAIL");
             fflush(stdout);
         }
     }
