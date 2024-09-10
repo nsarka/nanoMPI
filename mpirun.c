@@ -39,7 +39,7 @@ void* execute_command_on_host(void *args) {
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        PRINT_STDERR(stderr, "Usage: %s <hostname_file> <command>\n", argv[0]);
+        PRINT_STDERR("Usage: %s <hostname_file> <command>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
