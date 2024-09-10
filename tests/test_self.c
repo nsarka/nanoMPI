@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "util.h"
 #include "mpi.h"
 
 int main(int argc, char* argv[])
@@ -17,7 +18,7 @@ int main(int argc, char* argv[])
         MPI_Send(message, strlen(message)+1, MPI_CHAR, rank, tag, MPI_COMM_WORLD);
         memset(message, '\0', 100);
         MPI_Recv(message, 100, MPI_CHAR, rank, tag, MPI_COMM_WORLD, &status);
-        printf("%s\n",message);
+        PRINT_STDOUT("%s\n",message);
 
         MPI_Finalize();
         return 0;

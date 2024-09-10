@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "util.h"
 #include "mpi.h"
 
 #define ARRAY_SIZE 5
@@ -21,11 +20,11 @@ int main(int argc, char** argv) {
     MPI_Reduce(send_data, recv_data, ARRAY_SIZE, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        printf("Rank 0: Sum of all processes: ");
+        PRINT_STDOUT("Rank 0: Sum of all processes: ");
         for (int i = 0; i < ARRAY_SIZE; i++) {
-            printf("%d ", recv_data[i]);
+            PRINT_STDOUT("%d ", recv_data[i]);
         }
-        printf("\n");
+        PRINT_STDOUT("\n");
     }
 
     MPI_Finalize();

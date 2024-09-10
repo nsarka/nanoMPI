@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "util.h"
 #include <string.h>
 #include <pthread.h>
 
@@ -30,7 +29,7 @@ void* execute_command_on_host(void *args) {
              exe_args->cmd);
 
 #ifndef NDEBUG
-    printf("%s\n", ssh_command);
+    PRINT_STDOUT("%s\n", ssh_command);
 #endif
 
     if (system(ssh_command) == -1) {
@@ -40,7 +39,7 @@ void* execute_command_on_host(void *args) {
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        fprintf(stderr, "Usage: %s <hostname_file> <command>\n", argv[0]);
+        PRINT_STDERR(stderr, "Usage: %s <hostname_file> <command>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -64,13 +63,13 @@ int main(int argc, char *argv[]) {
 
     pthread_t *threads = malloc(size * sizeof(pthread_t));
     if (!threads) {
-        printf("Error allocating threads\n");
+        PRINT_STDERR("Error allocating threads\n");
         goto close;
     }
 
     execute_args_t *args = malloc(size * sizeof(execute_args_t));
     if (!args) {
-        printf("Error allocating args\n");
+        PRINT_STDERR("Error allocating args\n");
         goto free_threads;
     }
 

@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include <unistd.h>
 #include "mpi.h"
+#include "util.h"
 
 int main(int argc, char** argv) {
     int rank;
@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
     MPI_Barrier(MPI_COMM_WORLD);
 
-    printf("Hacky barrier test--see if everyone prints this message at the same time\n");
+    PRINT_STDOUT("Hacky barrier test--see if everyone prints this message at the same time\n");
 
     MPI_Finalize();
     return 0;

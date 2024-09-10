@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-
+#include "util.h"
 #include "comm.h"
 #include "backends/socket/socket_backend.h"
 
@@ -30,7 +27,7 @@ int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_si
     // MPI_COMM_WORLD
     nanompi_comm_world = (nanompi_communicator_t*) malloc(sizeof(nanompi_communicator_t));
     if (!nanompi_comm_world) {
-        printf("Error allocating nanompi_communicator_t\n");
+        PRINT_STDOUT("Error allocating nanompi_communicator_t\n");
         return MPI_ERR_OTHER;
     }
 
@@ -38,13 +35,13 @@ int nanompi_init_comm(nanompi_communicator_t **comm_dptr, int rank, int world_si
 
     status = nanompi_init_group(&nanompi_comm_world->local_group, rank, world_size, hostfile);
     if (status) {
-        printf("error in nanompi_init_group: %d\n", status);
+        PRINT_STDOUT("error in nanompi_init_group: %d\n", status);
         goto free_comm_world;
     }
 
     status = nanompi_init_socket_backend(nanompi_comm_world);
     if (status) {
-        printf("error in nanompi_init_socket_backend: %d\n", status);
+        PRINT_STDOUT("error in nanompi_init_socket_backend: %d\n", status);
         goto free_group;
     }
 
@@ -53,7 +50,7 @@ exit:
 free_group:
     status = nanompi_free_group(nanompi_comm_world->local_group);
     if (status) {
-        printf("error while freeing group\n");
+        PRINT_STDOUT("error while freeing group\n");
     }
 free_comm_world:
     free(nanompi_comm_world);
@@ -66,12 +63,12 @@ int nanompi_free_comm(nanompi_communicator_t *comm)
 
     status = nanompi_free_socket_backend(comm);
     if (status) {
-        printf("Error freeing comm socket backend\n");
+        PRINT_STDOUT("Error freeing comm socket backend\n");
     }
 
     status = nanompi_free_group(comm->local_group);
     if (status) {
-        printf("Error freeing comm->local_group\n");
+        PRINT_STDOUT("Error freeing comm->local_group\n");
     }
 
     free(comm);

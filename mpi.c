@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "mpi.h"
@@ -19,7 +17,7 @@ int MPI_Init(int *argc, char ***argv)
 
     status = nanompi_init_comm(&nanompi_comm_world, my_rank, world_size, hostfile);
     if (status) {
-        printf("Error in nanompi_init_comm\n");
+        PRINT_STDERR("Error in nanompi_init_comm\n");
     }
 
     return status;
@@ -31,7 +29,7 @@ int MPI_Finalize(void)
     
     status = nanompi_free_comm(nanompi_comm_world);
     if (status) {
-        printf("Error in nanompi_free_comm\n");
+        PRINT_STDERR("Error in nanompi_free_comm\n");
     }
     
     return status;

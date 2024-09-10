@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "util.h"
 #include "mpi.h"
 
 int main(int argc, char* argv[])
@@ -21,12 +22,11 @@ int main(int argc, char* argv[])
         }
         else
         {
-                //printf("Greetings from process %d!\n", rank);
                 for(source = 1; source < size; source++)
                 {
                         
                         MPI_Recv(message, 100, MPI_CHAR, source, tag, MPI_COMM_WORLD, &status);
-                        printf("%s\n",message);
+                        PRINT_STDOUT("%s\n",message);
                 }
         }
 

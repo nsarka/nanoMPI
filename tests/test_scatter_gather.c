@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "util.h"
 #include "mpi.h"
 
 #define ARRAY_SIZE 16
@@ -21,29 +20,29 @@ int main(int argc, char** argv) {
         for (int i = 0; i < ARRAY_SIZE; i++) {
             send_data[i] = i;
         }
-        printf("Rank 0: Original data: ");
+        PRINT_STDOUT("Rank 0: Original data: ");
         for (int i = 0; i < ARRAY_SIZE; i++) {
-            printf("%d ", send_data[i]);
+            PRINT_STDOUT("%d ", send_data[i]);
         }
-        printf("\n");
+        PRINT_STDOUT("\n");
     }
 
     MPI_Scatter(send_data, ARRAY_SIZE / size, MPI_INT, recv_data, ARRAY_SIZE / size, MPI_INT, 0, MPI_COMM_WORLD);
 
-    printf("Rank %d: Received data: ", rank);
+    PRINT_STDOUT("Rank %d: Received data: ", rank);
     for (int i = 0; i < ARRAY_SIZE / size; i++) {
-        printf("%d ", recv_data[i]);
+        PRINT_STDOUT("%d ", recv_data[i]);
     }
-    printf("\n");
+    PRINT_STDOUT("\n");
 
     MPI_Gather(recv_data, ARRAY_SIZE / size, MPI_INT, gather_data, ARRAY_SIZE / size, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        printf("Rank 0: Gathered data: ");
+        PRINT_STDOUT("Rank 0: Gathered data: ");
         for (int i = 0; i < ARRAY_SIZE; i++) {
-            printf("%d ", gather_data[i]);
+            PRINT_STDOUT("%d ", gather_data[i]);
         }
-        printf("\n");
+        PRINT_STDOUT("\n");
         free(send_data);
         free(gather_data);
     }

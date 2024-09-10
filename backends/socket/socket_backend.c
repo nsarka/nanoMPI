@@ -10,6 +10,7 @@
 #include "socket_backend.h"
 #include "constants.h"
 
+#include "util.h"
 #include "comm.h"
 
 
@@ -138,18 +139,18 @@ int nanompi_init_socket_backend(nanompi_communicator_t *comm)
 
     comm->socket_info.client_fds = (int*) malloc(sizeof(int) * size);
     if (!comm->socket_info.client_fds) {
-        printf("error mallocing client fds\n");
+        PRINT_STDERR("Error mallocing client fds\n");
         status = MPI_ERR_OTHER;
     }
 
     status = init_clients(comm);
     if (status) {
-        printf("error in init_clients\n");
+        PRINT_STDERR("Error in init_clients\n");
         goto free;
     }
     status = init_server(comm);
     if (status) {
-        printf("error in init_server\n");
+        PRINT_STDERR("Error in init_server\n");
         goto free;
     }
 

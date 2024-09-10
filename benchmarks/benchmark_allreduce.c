@@ -1,11 +1,10 @@
 #include <mpi.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 
 #define NUM_RUNS 1
 #define MAX_MESSAGE_SIZE 1048576  // 1 MB
 #define MIN_MESSAGE_SIZE 8        // 8 bytes
+
 
 double benchmark_allreduce(void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
     int rank;
@@ -58,8 +57,7 @@ int main(int argc, char **argv) {
     int* recvbuf = (int*)malloc(MAX_MESSAGE_SIZE);
 
     if (sendbuf == NULL || recvbuf == NULL) {
-        fprintf(stderr, "Error: Could not allocate memory\n");
-        fflush(stderr);
+        PRINT_STDERR("Error: Could not allocate memory\n");
         MPI_Abort(MPI_COMM_WORLD, 1);
     }
 
@@ -69,8 +67,7 @@ int main(int argc, char **argv) {
     }
 
     if (rank == 0) {
-        printf("%-25s %-20s %-20s %-20s\n", "Message Size (bytes)", "Latency (us)", "Bus BW (MB/s)", "Validation");
-        fflush(stdout);
+        PRINT_STDOUT("%-25s %-20s %-20s %-20s\n", "Message Size (bytes)", "Latency (us)", "Bus BW (MB/s)", "Validation");
     }
 
     for (int message_size = MIN_MESSAGE_SIZE; message_size <= MAX_MESSAGE_SIZE; message_size *= 2) {
@@ -84,8 +81,7 @@ int main(int argc, char **argv) {
 
         // Only the root process prints the results
         if (rank == 0) {
-            printf("%-25d %-20.2f %-20.4f %-20s\n", message_size, time, busBW, valid ? "PASS" : "FAIL");
-            fflush(stdout);
+            PRINT_STDOUT("%-25d %-20.2f %-20.4f %-20s\n", message_size, time, busBW, valid ? "PASS" : "FAIL");
         }
     }
 
@@ -95,3 +91,4 @@ int main(int argc, char **argv) {
     MPI_Finalize();
     return 0;
 }
+

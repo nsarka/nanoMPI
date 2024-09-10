@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "util.h"
 #include <string.h>
 
 #include "group.h"
@@ -21,7 +20,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
 
     group = (nanompi_group_t*) malloc(sizeof(nanompi_group_t));
     if (!group) {
-        printf("Error: OOM allocating nanompi_group_t\n");
+        PRINT_STDERR("Error: OOM allocating nanompi_group_t\n");
         goto close;
     }
     *group_dptr = group;
@@ -31,7 +30,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
 
     group->grp_proc_pointers = (nanompi_proc_t**) malloc(sizeof(nanompi_proc_t *) * world_size);
     if (!group->grp_proc_pointers) {
-        printf("Error: OOM allocating group->grp_proc_pointers\n");
+        PRINT_STDERR("Error: OOM allocating group->grp_proc_pointers\n");
         goto free_group;
     }
 
@@ -48,7 +47,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
 
         group->grp_proc_pointers[i] = (nanompi_proc_t*) malloc(sizeof(nanompi_proc_t));
         if (!group->grp_proc_pointers[i]) {
-            printf("Error: OOM allocating nanompi_proc_t\n");
+            PRINT_STDERR("Error: OOM allocating nanompi_proc_t\n");
             status = MPI_ERR_OTHER;
             goto free_hostnames;
         }
@@ -58,7 +57,7 @@ int nanompi_init_group(nanompi_group_t **group_dptr, int rank, int world_size, c
     }
 
     if (i != world_size) {
-        printf("Error: expected %d procs in hostfile, got %d\n", world_size, i);
+        PRINT_STDERR("Error: expected %d procs in hostfile, got %d\n", world_size, i);
         status = MPI_ERR_OTHER;
         goto free_hostnames;
     }

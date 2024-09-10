@@ -1,6 +1,5 @@
 #include "op.h"
-
-#include <stdio.h>
+#include "util.h"
 
 static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
 {
@@ -40,7 +39,7 @@ static void op_sum(const void *in, void *out, int *count, MPI_Datatype *dtype)
         } break;
         default:
         {
-            printf("dtype %d not supported yet\n", dtype->id);
+            PRINT_STDOUT("dtype %d not supported yet\n", dtype->id);
         }
     }
 
