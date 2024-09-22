@@ -35,7 +35,7 @@ int MPI_Finalize(void)
     return status;
 }
 
-// TODO: tags
+// TODO: tags, generate a message envelope with match info so the recv side can match
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
 {
     int status = MPI_SUCCESS;

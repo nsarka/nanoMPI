@@ -8,10 +8,18 @@
 #include "util.h"
 #include "../allgatherv/allgatherv.h"
 
-// Not bandwidth optimal since we're doing extra sends and reductions.
-// The ring algorithm normally will do p-1 sends/recvs of size count/p with the
-// between them reduction, followed by a ring allgather of size count/p,
-// where p = comm size
+// We model the total time to run the algorithms in this file using the α − β cost
+// model, also called the Hockney model (https://doi.org/10.1016/S0167-8191(06)80021-9).
+// The terms are:
+//    α=startup latency,
+//    β=pt2pt bandwidth,
+//    γ=compute bandwidth, and
+//    p=num processors
+
+// Ring Allreduce
+// First, do a reduce scatter in a ring fashion. Then, do a ring allgather.
+// Requires the reduce op to be associative and commutative.
+// T_ring = 2(p-1)*α + ()*β + = TODO
 int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                        MPI_Op op, MPI_Comm comm)
 {
@@ -20,6 +28,43 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
     MPI_Comm_size(comm, &size);
 
     int type_size = nanompi_get_dtype_size(datatype);
+    int send_to = (rank + 1) % size;
+    int recv_from = (rank - 1 + size) % size;
+    int chunk_count = count / size;
+    int chunk_rem = count % size;
+
+    // Copy sendbuf to recvbuf
+    memcpy(recvbuf, sendbuf, count * type_size);
+
+    void *temp_buf = malloc(count * type_size);
+    void *send_buf = malloc(count * type_size);
+
+    for (int i = 0; i < size - 1; i++) {
+        MPI_Send(send_buf, count, datatype, send_to, 0, comm);
+        MPI_Recv(temp_buf, count, datatype, recv_from, 0, comm, MPI_STATUS_IGNORE);
+
+        // Perform reduction operation
+        op.fn(temp_buf, recvbuf, &count, &datatype);
+
+        // Prepare for next iteration
+        memcpy(send_buf, temp_buf, count * type_size);
+    }
+
+    free(temp_buf);
+    free(send_buf);
+    return MPI_SUCCESS;
+}
+
+int MPI_Allreduce_ring_old(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
+                       MPI_Op op, MPI_Comm comm)
+{
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+
+    int type_size = nanompi_get_dtype_size(datatype);
+    int send_to = (rank + 1) % size;
+    int recv_from = (rank - 1 + size) % size;
 
     // Copy sendbuf to recvbuf
     memcpy(recvbuf, sendbuf, count * type_size);
@@ -29,9 +74,6 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
     memcpy(send_buf, recvbuf, count * type_size);
 
     for (int i = 0; i < size - 1; i++) {
-        int send_to = (rank + 1) % size;
-        int recv_from = (rank - 1 + size) % size;
-
         MPI_Send(send_buf, count, datatype, send_to, 0, comm);
         MPI_Recv(temp_buf, count, datatype, recv_from, 0, comm, MPI_STATUS_IGNORE);
 
