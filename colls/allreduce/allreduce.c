@@ -20,6 +20,7 @@
 // First, do a reduce scatter in a ring fashion. Then, do a ring allgather.
 // Requires the reduce op to be associative and commutative.
 // T_ring = 2(p − 1)α + 2nβ + nγ − (1/p)(2nβ+nγ)
+// TODO: expand on derivation
 int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                        MPI_Op op, MPI_Comm comm)
 {
