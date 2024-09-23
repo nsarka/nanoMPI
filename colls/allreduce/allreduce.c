@@ -59,7 +59,7 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
     }
 
     // Now, each rank has one completely reduced chunk_size portion of all ranks' sendbuf
-    // stored in chunk index=(rank + i) % size. Copy it to the recvbuf
+    // stored in chunk index=(rank + i) % size on the recvbuf
 
     // Allgather
     for (int i = 0; i < size - 1; i++) {
@@ -68,40 +68,6 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
 
         MPI_Send(recvbuf + send_offset, chunk_count, datatype, send_to, 0, comm);
         MPI_Recv(recvbuf + recv_offset, chunk_count, datatype, recv_from, 0, comm, MPI_STATUS_IGNORE);
-    }
-
-    free(temp_buf);
-    free(send_buf);
-    return MPI_SUCCESS;
-}
-
-int MPI_Allreduce_ring_old(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
-                       MPI_Op op, MPI_Comm comm)
-{
-    int rank, size;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &size);
-
-    int type_size = nanompi_get_dtype_size(datatype);
-    int send_to = (rank + 1) % size;
-    int recv_from = (rank - 1 + size) % size;
-
-    // Copy sendbuf to recvbuf
-    memcpy(recvbuf, sendbuf, count * type_size);
-
-    void *temp_buf = malloc(count * type_size);
-    void *send_buf = malloc(count * type_size);
-    memcpy(send_buf, recvbuf, count * type_size);
-
-    for (int i = 0; i < size - 1; i++) {
-        MPI_Send(send_buf, count, datatype, send_to, 0, comm);
-        MPI_Recv(temp_buf, count, datatype, recv_from, 0, comm, MPI_STATUS_IGNORE);
-
-        // Perform reduction operation
-        op.fn(temp_buf, recvbuf, &count, &datatype);
-
-        // Prepare for next iteration
-        memcpy(send_buf, temp_buf, count * type_size);
     }
 
     free(temp_buf);
