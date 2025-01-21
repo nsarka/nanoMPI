@@ -90,29 +90,42 @@ int MPI_Allreduce_tree(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
 
     void *temp_buf = malloc(count * type_size);
 
-    // Reduction phase (up the tree)
-    for (int stride = 1; stride < size; stride *= 2) {
-        if ((rank % (2 * stride)) == 0) {
-            if (rank + stride < size) {
-                MPI_Recv(temp_buf, count, datatype, rank + stride, 0, comm, MPI_STATUS_IGNORE);
+    int mask = 1;
+    // Reduction phase
+    while (mask < size) {
+        int partner = rank ^ mask;
+        if (partner < size) {
+            if (rank < partner) {
+                // Receive data from partner
+                MPI_Recv(temp_buf, count, datatype, partner, 0, comm, MPI_STATUS_IGNORE);
+                // Perform reduction operation
                 op.fn(temp_buf, recvbuf, &count, &datatype);
+            } else {
+                // Send data to partner
+                MPI_Send(recvbuf, count, datatype, partner, 0, comm);
+                // After sending, break to avoid further participation
+                break;
             }
-        } else {
-            MPI_Send(recvbuf, count, datatype, rank - stride, 0, comm);
-            break;
         }
+        mask <<= 1;
     }
 
-    // Broadcast phase (down the tree)
-    for (int stride = size / 2; stride > 0; stride /= 2) {
-        if ((rank % (2 * stride)) == 0) {
-            if (rank + stride < size) {
-                MPI_Send(recvbuf, count, datatype, rank + stride, 0, comm);
+    // Broadcast phase
+    mask >>= 1;
+    while (mask > 0) {
+        int partner = rank ^ mask;
+        if (partner < size) {
+            if (rank < partner) {
+                // Send data to partner
+                MPI_Send(recvbuf, count, datatype, partner, 0, comm);
+            } else {
+                // Receive data from partner
+                MPI_Recv(recvbuf, count, datatype, partner, 0, comm, MPI_STATUS_IGNORE);
+                // After receiving, break to avoid further participation
+                break;
             }
-        } else {
-            MPI_Recv(recvbuf, count, datatype, rank - stride, 0, comm, MPI_STATUS_IGNORE);
-            break;
         }
+        mask >>= 1;
     }
 
     free(temp_buf);
