@@ -33,8 +33,8 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
     int recv_from = mod(rank - 1, size);
     int chunk_count = count / size;
     int chunk_size = chunk_count * type_size;
-    int chunk_rem = count % size; // todo: handle remainder instead of assert
-    assert(chunk_rem == 0);
+    int chunk_rem = count % size; // todo: handle remainder instead of the following assert
+    assert(chunk_rem == 0); // msg size too small for ring allreduce
 
     // Copy sendbuf to recvbuf
     memcpy(recvbuf, sendbuf, count * type_size);
