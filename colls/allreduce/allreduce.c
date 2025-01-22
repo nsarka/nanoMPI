@@ -75,62 +75,6 @@ int MPI_Allreduce_ring(const void *sendbuf, void *recvbuf, int count, MPI_Dataty
     return MPI_SUCCESS;
 }
 
-int MPI_Allreduce_tree(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
-                       MPI_Op op, MPI_Comm comm)
-{
-    int rank, size;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &size);
-
-    int type_size;
-    MPI_Type_size(datatype, &type_size);
-
-    // Copy sendbuf to recvbuf
-    memcpy(recvbuf, sendbuf, count * type_size);
-
-    void *temp_buf = malloc(count * type_size);
-
-    int mask = 1;
-    // Reduction phase
-    while (mask < size) {
-        int partner = rank ^ mask;
-        if (partner < size) {
-            if (rank < partner) {
-                // Receive data from partner
-                MPI_Recv(temp_buf, count, datatype, partner, 0, comm, MPI_STATUS_IGNORE);
-                // Perform reduction operation
-                op.fn(temp_buf, recvbuf, &count, &datatype);
-            } else {
-                // Send data to partner
-                MPI_Send(recvbuf, count, datatype, partner, 0, comm);
-                // After sending, break to avoid further participation
-                break;
-            }
-        }
-        mask <<= 1;
-    }
-
-    // Broadcast phase
-    mask >>= 1;
-    while (mask > 0) {
-        int partner = rank ^ mask;
-        if (partner < size) {
-            if (rank < partner) {
-                // Send data to partner
-                MPI_Send(recvbuf, count, datatype, partner, 0, comm);
-            } else {
-                // Receive data from partner
-                MPI_Recv(recvbuf, count, datatype, partner, 0, comm, MPI_STATUS_IGNORE);
-                // After receiving, break to avoid further participation
-                break;
-            }
-        }
-        mask >>= 1;
-    }
-
-    free(temp_buf);
-    return MPI_SUCCESS;
-}
 
 int MPI_Allreduce_reduce_bcast(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                                MPI_Op op, MPI_Comm comm)
