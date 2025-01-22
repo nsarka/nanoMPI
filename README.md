@@ -2,7 +2,7 @@
 
 A minimal MPI Implementation loosely based on OpenMPI. nanoMPI has a few usecases:
 
-1. First and foremost, nanoMPI is for educational purposes. The vast majority of most MPI libraries' code is dedicated to performance optimization, which makes them hard to parse as a beginner. nanoMPI allows beginners to the field of distributed computing to quickly see answers to questions like "how is a tree allreduce implemented?"
+1. First and foremost, nanoMPI is for educational purposes. The vast majority of most MPI libraries' code is dedicated to performance optimization, which makes them hard to parse as a beginner. nanoMPI allows beginners to the field of distributed computing to quickly see answers to questions like "how is a ring allreduce implemented?"
 2. Development of distributed code on local devices is super convenient! It works offline and doesn't require job scheduling. Part of this project is to allow the authors to develop distributed code on a local laptop. 
 
 # Contents
