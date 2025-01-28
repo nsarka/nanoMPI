@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
+#include <netdb.h>
 #include <errno.h>
 
 #include "socket_backend.h"
@@ -47,7 +48,9 @@ static int init_server(nanompi_communicator_t *comm)
     // Turn off Nagle's algorithm
     // Nagle's algorithm is an OS-level buffering solution. The idea is for chat-like applications where a user
     // is typing in one byte at a time, the socket can coalesce (i.e., merge multiple small sends into one large send)
-    // these bytes to massively increase throughput by reducing the amount of control messages going back and forth
+    // these bytes to massively increase throughput by reducing the amount of control messages going back and forth.
+    // We want it off so that for small messages, it doesn't wait for the timeout before sending, messing up the
+    // latency measurement.
     if (setsockopt(comm->socket_info.server_fd, IPPROTO_TCP, TCP_NODELAY, (char *) &opt, sizeof(opt))) {
         perror("setsockopt");
         status = MPI_ERR_OTHER;
@@ -98,37 +101,49 @@ static int init_clients(nanompi_communicator_t *comm)
     int rank = comm->my_rank;
     int size = comm->local_group->grp_proc_count;
     nanompi_proc_t **grp_proc_pointers = comm->local_group->grp_proc_pointers;
-    int i;
-    struct sockaddr_in servaddr;
+    struct addrinfo *res = NULL;
+    int i, err;
+    struct addrinfo hints;
+    struct sockaddr_in *sa_in;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;  // IPv4
 
     // Make a client socket for every rank greater than mine. Last rank just returns
     // without doing anything
     for(i = rank + 1; i < size; i++) {
+        // Get ip of hostname (resolve dns)
+        if (err = getaddrinfo(grp_proc_pointers[i]->hostname, NULL, &hints, &res) != 0) {
+            printf("getaddrinfo failed: %s\n", gai_strerror(err));
+            goto free;
+        }
+
         if ((comm->socket_info.client_fds[i] = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             perror("client: socket creation error");
-            status = MPI_ERR_OTHER;
-            goto close_sock;
+            goto free;
         }
 
-        servaddr.sin_family = AF_INET;
-        servaddr.sin_port = htons(grp_proc_pointers[i]->port);
-
-        if (inet_pton(AF_INET, grp_proc_pointers[i]->hostname, &servaddr.sin_addr) <= 0) {
-            perror("client: invalid address / address not supported (nick: use ip addresses in the hostfile until we add name resolution)");
-            status = MPI_ERR_OTHER;
-            goto close_sock;
-        }
+        // Modify the port in the resolved address
+        sa_in = (struct sockaddr_in *)res->ai_addr;
+        sa_in->sin_port = htons(grp_proc_pointers[i]->port);
 
         // This client may have reached here before the server called accept(), so just keep trying
-        while (connect(comm->socket_info.client_fds[i], (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0);
+        while (connect(comm->socket_info.client_fds[i], res->ai_addr, res->ai_addrlen));
+
+        freeaddrinfo(res);
+        res = NULL;
     }
 
 exit:
     return status;
-close_sock:
+free:
+    if (res) {
+        freeaddrinfo(res);
+    }
     for(i--; i >= rank + 1; i--) {
         close(comm->socket_info.client_fds[i]);
     }
+    status = MPI_ERR_OTHER;
     goto exit;
 }
 
